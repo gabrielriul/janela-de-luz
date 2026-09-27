@@ -72,3 +72,11 @@ export function encontrarMelhoresJanelas(diasAvaliados, agora) {
     .sort((a, b) => b.notaMedia - a.notaMedia || b.quantidadeDeHoras - a.quantidadeDeHoras)
     .slice(0, QUANTIDADE_DE_JANELAS)
 }
+
+// Melhor hora de um dia, ignorando as que já passaram (se ainda sobrar alguma).
+// horaAtual: "2026-09-27T14:00" no dia de hoje; texto vazio nos outros dias.
+export function encontrarMelhorHora(dia, horaAtual = '') {
+  const horasFuturas = dia.horas.filter((hora) => hora.horario >= horaAtual)
+  const candidatas = horasFuturas.length > 0 ? horasFuturas : dia.horas
+  return candidatas.reduce((melhor, hora) => (hora.nota > melhor.nota ? hora : melhor))
+}

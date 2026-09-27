@@ -118,9 +118,9 @@ export function calcularNota(hora, luz, modo) {
   return { nota: arredondar(limitar(nota, 0, 10)), motivos }
 }
 
-// Traduz a nota em um rótulo e em um tom de cor do design system
+// Traduz a nota em um rótulo e em um tom de etiqueta (Badge) do design system
 export function classificarNota(nota) {
-  if (nota >= 8) return { rotulo: 'Ótima', tom: 'dark' }
+  if (nota >= 8) return { rotulo: 'Ótima', tom: 'ink' }
   if (nota >= NOTA_BOA) return { rotulo: 'Boa', tom: 'green' }
   if (nota >= 4) return { rotulo: 'Regular', tom: 'warning' }
   return { rotulo: 'Ruim', tom: 'negative' }

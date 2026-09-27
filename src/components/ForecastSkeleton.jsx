@@ -1,46 +1,77 @@
 import Card from './ui/Card.jsx'
 import Shimmer from './ui/Shimmer.jsx'
+import { ResponsiveGridList } from './ui/Layout.jsx'
 
-// Versão "esqueleto" da previsão, exibida enquanto a API responde
+// Versão "esqueleto" da previsão, exibida enquanto a API responde.
+// Repete a estrutura das duas seções, com formas cinza no lugar do conteúdo.
+const QUANTIDADE_DE_JANELAS = 3
 const QUANTIDADE_DE_DIAS = 7
-const QUANTIDADE_DE_LINHAS = 6
+const QUANTIDADE_DE_METRICAS = 6
+
+// Cria [0, 1, 2, ...] para desenhar a mesma quantidade de formas
+function lista(quantidade) {
+  return Array.from({ length: quantidade }, (_, indice) => indice)
+}
 
 function ForecastSkeleton() {
-  const dias = Array.from({ length: QUANTIDADE_DE_DIAS }, (_, indice) => indice)
-  const linhas = Array.from({ length: QUANTIDADE_DE_LINHAS }, (_, indice) => indice)
-
   return (
-    <section className="section" aria-busy="true">
-      <div className="section-heading">
-        <Shimmer width={200} height={30} />
+    <>
+      <section className="content-section" aria-busy="true">
         <span className="sr-only" role="status">
           Carregando...
         </span>
-      </div>
+        <TituloDaSecao />
+        <Shimmer width={300} height={40} rounded />
+        <ResponsiveGridList cols={{ mobile: 1, tablet: 3 }}>
+          {lista(QUANTIDADE_DE_JANELAS).map((indice) => (
+            <li key={indice}>
+              <Card>
+                <Shimmer width={120} height={16} />
+                <Shimmer width={90} height={22} />
+                <Shimmer width={140} height={16} />
+              </Card>
+            </li>
+          ))}
+        </ResponsiveGridList>
+      </section>
 
-      <div className="chip-row">
-        {dias.map((indice) => (
-          <Shimmer key={indice} width={88} height={40} />
-        ))}
-      </div>
-
-      <Card>
+      <section className="content-section" aria-hidden="true">
+        <TituloDaSecao />
+        <div className="chip-row chip-row--sem-quebra">
+          {lista(QUANTIDADE_DE_DIAS).map((indice) => (
+            <Shimmer key={indice} width={96} height={40} rounded />
+          ))}
+        </div>
         <div className="day-summary">
-          {dias.slice(0, 5).map((indice) => (
+          {lista(QUANTIDADE_DE_METRICAS).map((indice) => (
             <div key={indice} className="metric">
-              <Shimmer width={90} height={14} />
-              <Shimmer width={120} height={26} />
+              <Shimmer width={90} height={16} />
+              <Shimmer width={120} height={25} />
             </div>
           ))}
         </div>
-      </Card>
+        <ChartSkeleton />
+      </section>
+    </>
+  )
+}
 
-      <Card>
-        {linhas.map((indice) => (
-          <Shimmer key={indice} full height={18} />
-        ))}
-      </Card>
-    </section>
+function TituloDaSecao() {
+  return (
+    <div className="section-title">
+      <Shimmer width={260} height={25} />
+      <Shimmer width={200} height={16} />
+    </div>
+  )
+}
+
+// Esqueleto do card do gráfico: também aparece enquanto o código do Recharts é baixado (Suspense)
+export function ChartSkeleton() {
+  return (
+    <Card>
+      <Shimmer width={180} height={22} />
+      <Shimmer full height={240} />
+    </Card>
   )
 }
 

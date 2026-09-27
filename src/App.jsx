@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CircleAlert, MapPin, SearchX } from 'lucide-react'
-import Header from './components/Header.jsx'
+import AppHeader from './components/AppHeader.jsx'
 import SearchBar from './components/SearchBar.jsx'
-import EmptyState from './components/EmptyState.jsx'
 import CityList from './components/CityList.jsx'
 import CityListSkeleton from './components/CityListSkeleton.jsx'
 import SelectedCity from './components/SelectedCity.jsx'
@@ -10,9 +9,16 @@ import SavedLocations from './components/SavedLocations.jsx'
 import Forecast from './components/Forecast.jsx'
 import Footer from './components/Footer.jsx'
 import Button from './components/ui/Button.jsx'
+import FeedbackPlaceholder from './components/ui/FeedbackPlaceholder.jsx'
+import { MainContentContainer } from './components/ui/Layout.jsx'
+import { PageHeader } from './components/ui/PageHeader.jsx'
 import { buscarCidades } from './services/openMeteo.js'
 import { useFavoritos } from './hooks/useFavoritos.js'
+import { useTema } from './hooks/useTema.js'
+import { useRolagemDaPagina } from './hooks/useRolagemDaPagina.js'
 import './App.css'
+
+const TITULO_DA_PAGINA = 'Encontre a melhor hora para gravar'
 
 // Componente principal: organiza o layout e guarda o estado compartilhado da página
 function App() {
@@ -22,6 +28,12 @@ function App() {
   const [status, setStatus] = useState('inicial')
   const [cidadeSelecionada, setCidadeSelecionada] = useState(null)
   const { favoritos, ehFavorita, alternarFavorito } = useFavoritos()
+  const { tema, alternarTema } = useTema()
+
+  // A barra do topo acompanha a rolagem: quando o título grande some por baixo dela,
+  // o nome da cidade (ou o título da página) aparece no centro da barra
+  const refTitulo = useRef(null)
+  const { rolou, tituloEscondido } = useRolagemDaPagina(refTitulo)
 
   // O título da aba do navegador acompanha a cidade escolhida (manipulação do DOM fora do React)
   useEffect(() => {
@@ -68,25 +80,25 @@ function App() {
 
     if (status === 'erro') {
       return (
-        <EmptyState
+        <FeedbackPlaceholder
           icon={CircleAlert}
           tone="negative"
-          titulo="Não foi possível buscar as cidades"
-          texto="Verifique sua conexão com a internet e tente novamente."
+          title="Não foi possível buscar as cidades"
+          description="Verifique sua conexão com a internet e tente novamente."
         >
-          <Button variant="secondary" onClick={() => handleSearch(ultimoTermo)}>
+          <Button variant="secondary-neutral" compact onClick={() => handleSearch(ultimoTermo)}>
             Tentar novamente
           </Button>
-        </EmptyState>
+        </FeedbackPlaceholder>
       )
     }
 
     if (status === 'sucesso' && cidades.length === 0) {
       return (
-        <EmptyState
+        <FeedbackPlaceholder
           icon={SearchX}
-          titulo="Nenhuma cidade encontrada"
-          texto={`Não há resultados para "${ultimoTermo}". Confira a grafia ou tente uma cidade próxima.`}
+          title="Nenhuma cidade encontrada"
+          description={`Não há resultados para "${ultimoTermo}". Confira a grafia ou tente uma cidade próxima.`}
         />
       )
     }
@@ -96,10 +108,10 @@ function App() {
     }
 
     return (
-      <EmptyState
+      <FeedbackPlaceholder
         icon={MapPin}
-        titulo="Nenhuma cidade selecionada"
-        texto={
+        title="Nenhuma cidade selecionada"
+        description={
           favoritos.length > 0
             ? 'Busque uma cidade ou escolha uma das locações salvas.'
             : 'Busque uma cidade para ver as melhores horas para gravar nos próximos 7 dias.'
@@ -110,25 +122,32 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+      <AppHeader
+        titulo={cidadeSelecionada ? cidadeSelecionada.nome : TITULO_DA_PAGINA}
+        rolou={rolou}
+        mostrarTitulo={tituloEscondido}
+        tema={tema}
+        onAlternarTema={alternarTema}
+      />
 
-      <main className="page">
-        <section className="page-intro">
-          <h1 className="heading-1">Encontre a melhor hora para gravar</h1>
-          <p className="text-muted">
-            Busque uma cidade e veja, hora a hora, como vão estar as nuvens, a chuva, o vento e a luz
-            do sol nos próximos 7 dias.
-          </p>
-        </section>
+      <MainContentContainer className="page">
+        <div className="page__topo">
+          <PageHeader subtitle="Planejador de gravações externas" title={TITULO_DA_PAGINA} titleRef={refTitulo}>
+            <p>
+              Busque uma cidade e veja, hora a hora, como vão estar as nuvens, a chuva, o vento e a luz
+              do sol nos próximos 7 dias.
+            </p>
+          </PageHeader>
 
-        <SearchBar onSearch={handleSearch} carregando={status === 'carregando'} />
+          <SearchBar onSearch={handleSearch} carregando={status === 'carregando'} />
+        </div>
 
         {!cidadeSelecionada && (
           <SavedLocations favoritos={favoritos} onSelect={setCidadeSelecionada} />
         )}
 
         {renderResultado()}
-      </main>
+      </MainContentContainer>
 
       <Footer />
     </div>

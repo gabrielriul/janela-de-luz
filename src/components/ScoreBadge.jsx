@@ -2,7 +2,7 @@ import Badge from './ui/Badge.jsx'
 import { classificarNota } from '../utils/nota.js'
 import { formatarNota } from '../utils/formatters.js'
 
-// Transforma a lista de motivos em um texto para a dica (title) do badge
+// Transforma a lista de motivos em um texto para a dica (title) da etiqueta
 function explicarMotivos(motivos) {
   return motivos
     .map(({ texto, valor }) => {
@@ -13,7 +13,7 @@ function explicarMotivos(motivos) {
     .join('\n')
 }
 
-// Nota de gravação em um badge colorido de acordo com a classificação.
+// Nota de gravação em uma etiqueta com o tom da classificação (Ótima, Boa, Regular, Ruim).
 // motivos: opcional; quando existe, aparece ao passar o mouse sobre a nota.
 function ScoreBadge({ nota, motivos = [], mostrarRotulo = false }) {
   const { rotulo, tom } = classificarNota(nota)

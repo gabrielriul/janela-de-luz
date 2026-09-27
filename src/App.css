@@ -1,330 +1,199 @@
+/*
+  Estilos das telas do Janela de Luz. Os componentes base (cards, botões, seções...) ficam em
+  components/ui/ui.css; aqui fica só o que é específico deste app.
+*/
+
 /* ---------- Estrutura da página ---------- */
+
+/* Ao navegar pelo teclado, o elemento em foco não fica escondido atrás da barra fixa do topo */
+html {
+  scroll-padding-top: var(--header-height);
+}
+
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* ---------- Header ---------- */
-.app-header {
-  border-bottom: 1px solid var(--neutral-200);
-}
-
-.app-header__inner {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: var(--space-4) var(--space-6);
-}
-
-.wordmark {
-  font-size: 1.25rem;
-  line-height: 1.875rem;
-  font-weight: 600;
-}
-
-/* ---------- Conteúdo ---------- */
+/* Espaço entre as seções da página (o ritmo das seções) */
 .page {
   flex: 1;
-  width: 100%;
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.page__topo {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 }
 
-.page-intro {
+/* ---------- Barra do topo (AppHeader) ---------- */
+/* Vidro fixo de 64px. Parada no topo, não tem sombra nem linha; ao rolar, as duas aparecem. */
+.app-bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-fixed-menu);
+  height: var(--header-height);
+  border-width: 0 0 1px;
+  border-color: transparent;
+  box-shadow: none;
+  transition:
+    box-shadow 200ms,
+    border-color 200ms;
+}
+
+.app-bar--rolou {
+  border-color: var(--separator);
+  box-shadow: var(--shadow-glass);
+}
+
+.app-bar__inner {
+  position: relative;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: 100%;
+}
+
+.app-bar__marca {
+  display: flex;
+  align-items: center;
   gap: var(--space-2);
-  max-width: 640px;
+  min-width: 0;
+}
+
+.app-bar__logo {
+  flex-shrink: 0;
+}
+
+/* O nome do app faz parte da marca, por isso usa a fonte da marca */
+.wordmark {
+  font-family: var(--font-brand);
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: opacity 200ms;
+}
+
+/* Título que "sobe" para o centro da barra quando o título grande passa por baixo dela */
+.app-bar__titulo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: calc(100% - 160px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, calc(-50% + 6px));
+  transition:
+    opacity 200ms,
+    transform 300ms var(--ease-ios);
+}
+
+.app-bar--com-titulo .app-bar__titulo {
+  opacity: 1;
+  transform: translate(-50%, -50%);
 }
 
 /* ---------- Busca ---------- */
 .search {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--space-2);
+  max-width: 640px;
 }
 
 .search .field {
   flex: 1;
+  min-width: 0;
 }
 
-/* ---------- Estado vazio ---------- */
-.empty-state {
-  align-items: center;
-  text-align: center;
-  gap: var(--space-2);
-}
-
-.empty-state p {
-  max-width: 460px;
-}
-
-.empty-state__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: var(--space-2);
-  border-radius: var(--radius-full);
-  background: var(--green-100);
-  color: var(--neutral-600);
-}
-
-.empty-state__icon--negative {
-  background: var(--negative-100);
-  color: var(--negative-200);
-}
-
-.empty-state .btn {
-  margin-top: var(--space-2);
-}
-
-/* ---------- Seções ---------- */
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.section-heading {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-/* ---------- Lista de cidades ---------- */
-.city-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.city-grid > li {
-  display: flex;
-}
-
-.city-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.city-card__name {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-/* ---------- Cidade selecionada ---------- */
-.selected-city__header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.selected-city__title {
-  display: flex;
-  flex-direction: column;
-}
-
-.badge-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-/* ---------- Footer ---------- */
-.app-footer {
-  border-top: 1px solid var(--neutral-200);
-}
-
-.app-footer__inner {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-2);
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: var(--space-6);
-}
-
-/* ---------- Telas pequenas ---------- */
-@media (max-width: 767px) {
-  .app-header__inner,
-  .app-footer__inner {
-    padding-inline: var(--space-4);
-  }
-
-  .page {
-    padding: var(--space-6) var(--space-4);
-  }
-
-  .search {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
-/* ---------- Previsão ---------- */
+/* ---------- Locações salvas ---------- */
 .chip-row {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
-  overflow-x: auto;
-  padding: 4px; /* espaço para o anel de foco não ser cortado */
-  margin: -4px;
-  scrollbar-width: thin;
 }
 
-.day-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: var(--space-6);
-}
-
-.hourly-card {
+.chip-row--sem-quebra {
+  flex-wrap: nowrap;
   overflow: hidden;
 }
 
-.table-scroll {
-  position: relative;
-  overflow-x: auto;
+/* ---------- Cidades encontradas ---------- */
+.city-skeleton__texto {
+  gap: 6px;
 }
 
-.hourly-table {
-  width: 100%;
-  border-collapse: collapse;
-  white-space: nowrap;
-}
-
-.hourly-table th,
-.hourly-table td {
-  padding: var(--space-3) var(--space-4);
-  text-align: left;
-  font-weight: 500;
-}
-
-.hourly-table thead th {
-  font-size: 12px;
-  line-height: 18px;
-  color: var(--neutral-500);
-  border-bottom: 1px solid var(--neutral-200);
-}
-
-.hourly-table tbody tr:nth-child(even) {
-  background: var(--neutral-150);
-}
-
-.hourly-table tbody tr.is-night,
-.hourly-table tbody tr.is-past {
-  color: var(--neutral-500);
-}
-
-.hourly-table tbody tr.is-past td,
-.hourly-table tbody tr.is-past th {
-  opacity: 0.6;
-}
-
-/* Horas da janela escolhida nos cards de "Melhores janelas" */
-.hourly-table tbody tr.is-highlight {
-  background: var(--green-100);
-}
-
-.hourly-table tbody tr.is-highlight th {
-  box-shadow: inset 3px 0 0 var(--green-300);
-}
-
-/* ---------- Modo de gravação ---------- */
-.mode-selector {
+/* ---------- Cidade selecionada ---------- */
+.selected-city__titulo {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 2px;
 }
 
-.mode-selector__descricao {
+.selected-city__acoes {
   display: flex;
-  align-items: flex-start;
+  flex-wrap: wrap;
   gap: var(--space-2);
 }
 
-.mode-selector__descricao svg {
-  flex-shrink: 0;
-  margin-top: 3px;
+/* Os detalhes ficam separados do cabeçalho do card por uma linha fina */
+.selected-city .data-list {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--separator);
 }
 
 /* ---------- Melhores janelas ---------- */
-.window-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.mode-description {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  max-width: 640px;
 }
 
-.window-grid > li {
-  display: flex;
-}
-
-.window-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+.mode-description .lucide {
+  margin-top: 2px;
 }
 
 .window-card__topo {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
-  margin-bottom: var(--space-1);
 }
 
-/* Ao rolar até a tabela, deixa um respiro no topo */
-.section--scroll-alvo {
-  scroll-margin-top: var(--space-4);
+.window-card__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.weather-cell {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-@media (max-width: 767px) {
-  .hide-mobile {
-    display: none;
-  }
-
-  .hourly-table th,
-  .hourly-table td {
-    padding: var(--space-2) var(--space-3);
-  }
+/* ---------- Previsão hora a hora: métricas do dia ---------- */
+.day-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-6) var(--space-8);
 }
 
 /* ---------- Gráfico ---------- */
+.score-chart {
+  /* Colunas abaixo da nota boa: cinza que ainda tem contraste de 3:1 com o card nos dois temas */
+  --cor-nota-baixa: color-mix(in srgb, var(--neutral-500) 75%, var(--neutral-100));
+}
+
 .chart-header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-}
-
-.chart-header__titulo {
-  font-size: 1rem;
-  line-height: 1.5rem;
-  font-weight: 500;
+  gap: 2px;
 }
 
 .chart-area {
@@ -337,88 +206,176 @@
   font-variant-numeric: tabular-nums;
 }
 
-.chart-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.legend__swatch--baixa,
+.chart-tip__swatch--baixa {
+  background: var(--cor-nota-baixa);
 }
 
-.chart-legend li {
+.legend__swatch--dashed {
+  color: var(--neutral-500);
+}
+
+.legend__swatch--golden {
+  background: var(--warning-100);
+  box-shadow: inset 0 0 0 1px var(--warning-200);
+}
+
+.legend__swatch--blue {
+  background: var(--blue-100);
+  box-shadow: inset 0 0 0 1px var(--blue-200);
+}
+
+.chart-tip__swatch--vazio {
+  background: transparent;
+}
+
+/* ---------- Previsão hora a hora: tabela ---------- */
+.hourly-table tbody th {
+  font-weight: 600;
+}
+
+/* A coluna "Hora" fica presa à esquerda quando a tabela rola para o lado */
+.hourly-table tr > :first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.hourly-table thead th:first-child {
+  background: var(--neutral-150);
+}
+
+.hourly-table tbody th {
+  background: var(--neutral-100);
+}
+
+/* No hover, a célula presa soma o cinza do hover ao branco (senão ficaria transparente) */
+.hourly-table tbody tr:hover > th {
+  background: linear-gradient(var(--fill-control-hover), var(--fill-control-hover)) var(--neutral-100);
+}
+
+/* Linha fina na borda da coluna presa, só depois de rolar */
+.table-scroll.is-scrolled .hourly-table tbody th {
+  box-shadow:
+    inset -1px 0 0 var(--separator),
+    inset 0 1px 0 var(--separator);
+}
+
+.table-scroll.is-scrolled .hourly-table thead th:first-child,
+.table-scroll.is-scrolled .hourly-table tbody tr:first-child > th {
+  box-shadow: inset -1px 0 0 var(--separator);
+}
+
+/* Noite e horas que já passaram: texto em cinza */
+.hourly-table tr.is-night > *,
+.hourly-table tr.is-past > * {
+  color: var(--neutral-500);
+}
+
+/* Horas que já passaram: etiquetas e ícones apagados */
+.hourly-table tr.is-past .badge,
+.hourly-table tr.is-past .lucide {
+  opacity: 0.5;
+}
+
+/* Horas da janela escolhida nos cards de "Melhores janelas": fundo verde-claro e faixa na borda */
+.hourly-table tbody tr.is-highlight > *,
+.hourly-table tbody tr.is-highlight:hover > th {
+  background: var(--green-100);
+}
+
+.hourly-table tbody tr.is-highlight > th {
+  box-shadow:
+    inset 3px 0 0 var(--chart-primary),
+    inset 0 1px 0 var(--separator);
+}
+
+.table-scroll.is-scrolled .hourly-table tbody tr.is-highlight > th {
+  box-shadow:
+    inset 3px 0 0 var(--chart-primary),
+    inset -1px 0 0 var(--separator),
+    inset 0 1px 0 var(--separator);
+}
+
+.weather-cell {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
 }
 
-.chart-legend__marca {
-  width: 12px;
-  height: 12px;
-  border-radius: var(--radius-sm);
-}
-
-.chart-legend__marca--boa {
-  background: var(--green-300);
-}
-
-.chart-legend__marca--baixa {
-  background: var(--neutral-300);
-}
-
-.chart-legend__marca--golden {
-  background: var(--warning-100);
-  box-shadow: inset 0 0 0 1px var(--warning-200);
-}
-
-.chart-legend__marca--blue {
-  background: var(--blue-100);
-  box-shadow: inset 0 0 0 1px var(--blue-200);
-}
-
-.chart-legend__linha {
-  width: 14px;
-  height: 1px;
-  background: var(--neutral-500);
-}
-
-.chart-tooltip {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-3) var(--space-4);
-  background: var(--neutral-100);
-  border: 1px solid var(--neutral-200);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-lg);
-  color: var(--neutral-600);
-}
-
-.chart-tooltip__valor strong {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-/* ---------- Locações salvas e ações da cidade ---------- */
-.chip-row--quebra {
-  flex-wrap: wrap;
-  overflow: visible;
-}
-
-.selected-city__acoes {
+/* ---------- Rodapé ---------- */
+.app-footer__inner {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  padding-block: var(--space-6) 40px;
+  border-top: 1px solid var(--separator);
 }
 
-/* ---------- Menos movimento para quem prefere ---------- */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* ---------- Celular ---------- */
+@media (max-width: 767px) {
+  /* Com o título na barra, o nome do app sai para dar espaço */
+  .app-bar--com-titulo .wordmark {
+    opacity: 0;
+  }
+
+  .hide-mobile {
+    display: none;
+  }
+
+  /* Detalhes da cidade viram uma lista de detalhes do iOS: rótulo à esquerda, valor à direita */
+  .selected-city .data-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+
+  .selected-city .data-list__item {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: 11px 0;
+    box-shadow: inset 0 -1px 0 var(--separator);
+  }
+
+  .selected-city .data-list__item:last-child {
+    padding-bottom: 0;
+    box-shadow: none;
+  }
+
+  .selected-city .data-list dd {
+    text-align: right;
+  }
+
+  /* Abaixo do tablet a tabela encosta nas bordas da tela e as células ficam mais estreitas */
+  .hourly-card {
+    margin-inline: calc(var(--space-4) * -1);
+    border-radius: 0;
+  }
+
+  .hourly-table thead th,
+  .hourly-table tbody td,
+  .hourly-table tbody th {
+    padding: 0 var(--space-3);
+  }
+}
+
+/* Coordenadas na lista de cidades: só quando cabem */
+@media (max-width: 639px) {
+  .city-list .list__value {
+    display: none;
+  }
+}
+
+/* ---------- Tablet em diante ---------- */
+@media (min-width: 768px) {
+  .page {
+    gap: 64px;
+  }
+
+  .app-bar__titulo {
+    max-width: 50%;
   }
 }
