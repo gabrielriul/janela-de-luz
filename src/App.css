@@ -313,3 +313,88 @@
     padding: var(--space-2) var(--space-3);
   }
 }
+
+/* ---------- Gráfico ---------- */
+.chart-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.chart-header__titulo {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+}
+
+.chart-area {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Números dos eixos alinhados */
+.chart-area .recharts-cartesian-axis-tick-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chart-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chart-legend__marca {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.chart-legend__marca--boa {
+  background: var(--green-300);
+}
+
+.chart-legend__marca--baixa {
+  background: var(--neutral-300);
+}
+
+.chart-legend__marca--golden {
+  background: var(--warning-100);
+  box-shadow: inset 0 0 0 1px var(--warning-200);
+}
+
+.chart-legend__marca--blue {
+  background: var(--blue-100);
+  box-shadow: inset 0 0 0 1px var(--blue-200);
+}
+
+.chart-legend__linha {
+  width: 14px;
+  height: 1px;
+  background: var(--neutral-500);
+}
+
+.chart-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--neutral-100);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  color: var(--neutral-600);
+}
+
+.chart-tooltip__valor strong {
+  font-size: 1.25rem;
+  font-weight: 700;
+}

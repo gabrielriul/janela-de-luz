@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useMemo, useRef, useState } from 'react'
 import { CalendarX, CircleAlert } from 'lucide-react'
 import ModeSelector from './ModeSelector.jsx'
 import BestWindows from './BestWindows.jsx'
@@ -8,10 +8,16 @@ import HourlyTable from './HourlyTable.jsx'
 import ForecastSkeleton from './ForecastSkeleton.jsx'
 import EmptyState from './EmptyState.jsx'
 import Button from './ui/Button.jsx'
+import Card from './ui/Card.jsx'
+import Shimmer from './ui/Shimmer.jsx'
 import { usePrevisao } from '../hooks/usePrevisao.js'
 import { MODOS } from '../utils/nota.js'
 import { avaliarDias, encontrarMelhoresJanelas } from '../utils/avaliacao.js'
 import { formatarDiaLongo } from '../utils/formatters.js'
+
+// O gráfico usa a biblioteca Recharts, que é grande. Com lazy, o código dele só é baixado
+// quando o gráfico aparece pela primeira vez, e a página inicial carrega mais rápido.
+const ScoreChart = lazy(() => import('./ScoreChart.jsx'))
 
 // Previsão da cidade escolhida: modo de gravação, melhores janelas e tabela hora a hora
 function Forecast({ cidade }) {
@@ -117,6 +123,16 @@ function Forecast({ cidade }) {
 
         <DaySelector dias={diasAvaliados} indiceSelecionado={indiceDia} onSelect={handleDaySelect} />
         <DaySummary dia={dia} janelas={dia.janelas} />
+        {/* Suspense mostra o esqueleto enquanto o código do gráfico é baixado */}
+        <Suspense
+          fallback={
+            <Card>
+              <Shimmer full height={280} />
+            </Card>
+          }
+        >
+          <ScoreChart dia={dia} horaAtual={horaAtual} nomeDoModo={modo.nome} />
+        </Suspense>
         <HourlyTable horas={dia.horas} horaAtual={horaAtual} destaque={destaque} />
       </section>
     </>

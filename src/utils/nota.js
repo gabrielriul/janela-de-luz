@@ -9,6 +9,8 @@
 //
 // Cada modo usa pesos diferentes, definidos no objeto MODOS abaixo.
 
+import { NOMES_DA_LUZ } from './luz.js'
+
 export const MODOS = {
   externa: {
     nome: 'Externa',
@@ -41,8 +43,6 @@ export const MODOS = {
     notaMaxima: { dia: 4, golden: 10, blue: 7, noite: 0 },
   },
 }
-
-const NOMES_DA_LUZ = { dia: 'Dia', golden: 'Golden hour', blue: 'Blue hour', noite: 'Noite' }
 
 // Mantém o valor entre um mínimo e um máximo
 function limitar(valor, minimo, maximo) {
