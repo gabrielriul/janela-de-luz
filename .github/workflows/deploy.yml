@@ -1,12 +1,10 @@
-# CI/CD do Janela de Luz
-# CI: a cada push ou pull request, instala as dependências, roda o lint e gera o build.
-# CD: quando o push é na branch main, publica o build no GitHub Pages.
-name: CI/CD
+# CD — Deploy contínuo
+# Roda somente quando a main recebe código (merge de um Pull Request).
+# Gera o build de produção e publica no GitHub Pages.
+name: Deploy
 
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -15,13 +13,14 @@ permissions:
   pages: write
   id-token: write
 
+# Um deploy por vez; um novo não cancela o que já está publicando
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
-    name: Lint e build
+    name: Build de produção
     runs-on: ubuntu-latest
     steps:
       - name: Baixar o código
@@ -44,14 +43,12 @@ jobs:
         run: npm run build -- --base=/${{ github.event.repository.name }}/
 
       - name: Enviar o build para o GitHub Pages
-        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
   deploy:
     name: Publicar no GitHub Pages
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:

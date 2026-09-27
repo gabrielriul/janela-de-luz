@@ -1,6 +1,6 @@
 # Janela de Luz
 
-[![CI/CD](https://github.com/gabrielriul/janela-de-luz/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/gabrielriul/janela-de-luz/actions/workflows/ci-cd.yml)
+[![Deploy](https://github.com/gabrielriul/janela-de-luz/actions/workflows/deploy.yml/badge.svg)](https://github.com/gabrielriul/janela-de-luz/actions/workflows/deploy.yml)
 
 > **Repositório acadêmico** criado como Projeto 1 da disciplina **ES47B – Programação Web Fullstack – ES71 (2026_02)**, do curso de Engenharia da Computação da Universidade Tecnológica Federal do Paraná (UTFPR), câmpus Cornélio Procópio.
 >
@@ -45,17 +45,38 @@ npm run dev
 
 Depois é só abrir o endereço que aparecer no terminal (normalmente http://localhost:5173).
 
+## Fluxo de trabalho
+
+O repositório simula o fluxo usado em equipes de produto:
+
+| Branch | Papel |
+| --- | --- |
+| `main` | Produção. Só recebe código por Pull Request vindo da `develop`. Cada merge publica o app no GitHub Pages. |
+| `develop` | Desenvolvimento. Todas as etapas são commitadas aqui. |
+
+1. O trabalho é feito e commitado na `develop`.
+2. Quando uma entrega está pronta, abre-se um Pull Request da `develop` para a `main`, seguindo o [template de PR](.github/pull_request_template.md).
+3. O **CI** roda no Pull Request. O merge só acontece com o CI aprovado e depois da revisão.
+4. O merge na `main` dispara o **deploy** para o GitHub Pages.
+
+A `main` é protegida por uma regra no GitHub: não aceita push direto nem force push, exige Pull Request e exige o check **Lint e build** aprovado.
+
+Os commits seguem o padrão [Conventional Commits](https://www.conventionalcommits.org/pt-br/): `feat`, `fix`, `style`, `docs`, `ci`, `chore`.
+
 ## CI/CD
 
-O workflow [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) roda no GitHub Actions:
-
-- **CI** — a cada push ou pull request: `npm ci`, lint com oxlint e build de produção. Se algo quebrar, o commit fica marcado com erro.
-- **CD** — a cada push na `main`: o build é publicado automaticamente no GitHub Pages.
+| Workflow | Quando roda | O que faz |
+| --- | --- | --- |
+| [`ci.yml`](.github/workflows/ci.yml) | Pull Request para a `main` | `npm ci`, lint com oxlint e build de produção |
+| [`deploy.yml`](.github/workflows/deploy.yml) | Push na `main` (merge de PR) | Lint, build e publicação no GitHub Pages |
 
 ## Estrutura
 
 ```
-.github/workflows/ci-cd.yml   # pipeline de CI/CD
+.github/
+├── workflows/ci.yml       # CI: lint e build nos Pull Requests para a main
+├── workflows/deploy.yml   # CD: deploy no GitHub Pages a cada merge na main
+└── pull_request_template.md
 src/
 ├── components/   # componentes da interface (Header, SearchBar, EmptyState, Footer...)
 │   └── ui/       # componentes base do design system (Button, Card, Badge, TextInput, Spinner, Shimmer)
@@ -78,6 +99,7 @@ Conforme pedido no enunciado, registro aqui como usei IA generativa no desenvolv
 | Etapa 1 — layout base | Claude | Geração da estrutura inicial dos componentes e do CSS | Revisão do código; conceitos: componentes, props, estado com `useState`, componente controlado e renderização condicional |
 | Versionamento e CI/CD | Claude | Commits no repositório e criação do workflow de CI/CD (GitHub Actions + GitHub Pages) | Ativação do GitHub Pages nas configurações do repositório; conceitos: integração contínua, deploy contínuo e build com Vite |
 | Design system | Claude | Aplicação do meu design system (cores, tipografia, espaçamento, raios) e criação dos componentes base em `components/ui` | Revisão do código; conceitos: variáveis CSS, componentes reutilizáveis com props e variantes, prop `children` |
+| Fluxo de branches | Claude | Criação da branch `develop`, separação dos workflows de CI e deploy e template de Pull Request | Definição do fluxo `develop` → PR → `main` e configuração da regra de proteção da `main` no GitHub |
 | Etapa 2 — busca de cidades | Claude | Integração com a Geocoding API da Open-Meteo, lista de cidades, estados de carregamento, erro e sem resultados | Revisão do código e teste no navegador; conceitos: `fetch` com `async/await`, `try/catch`, estado da requisição, `map` com `key` e renderização condicional |
 
 Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na mensagem.
