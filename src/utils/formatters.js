@@ -21,3 +21,66 @@ export function formatarCoordenadas(latitude, longitude) {
 export function formatarRegiao(cidade) {
   return [cidade.estado, cidade.pais].filter(Boolean).join(', ')
 }
+
+// Valores ausentes (a API às vezes envia null) aparecem como travessão
+const SEM_VALOR = '—'
+
+// 21.6 -> "22 °C"
+export function formatarTemperatura(valor) {
+  return valor == null ? SEM_VALOR : `${formatoInteiro.format(valor)} °C`
+}
+
+// 35 -> "35%"
+export function formatarPorcentagem(valor) {
+  return valor == null ? SEM_VALOR : `${formatoInteiro.format(valor)}%`
+}
+
+// 12.4 -> "12 km/h"
+export function formatarVelocidade(valor) {
+  return valor == null ? SEM_VALOR : `${formatoInteiro.format(valor)} km/h`
+}
+
+// "2026-09-27T06:05" -> "06:05"
+export function formatarHorario(horarioIso) {
+  return horarioIso.slice(11, 16)
+}
+
+// 365 -> "06:05" (minutos desde a meia-noite)
+export function formatarMinutos(totalDeMinutos) {
+  const horas = String(Math.floor(totalDeMinutos / 60)).padStart(2, '0')
+  const minutos = String(totalDeMinutos % 60).padStart(2, '0')
+  return `${horas}:${minutos}`
+}
+
+// [365, 425] -> "06:05–07:05"
+export function formatarIntervalo([inicio, fim]) {
+  return `${formatarMinutos(inicio)}–${formatarMinutos(fim)}`
+}
+
+const formatoDiaCurto = new Intl.DateTimeFormat('pt-BR', {
+  weekday: 'short',
+  day: '2-digit',
+  month: '2-digit',
+})
+
+const formatoDiaLongo = new Intl.DateTimeFormat('pt-BR', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+})
+
+// "2026-09-30" -> Date local (sem converter fuso, que mudaria o dia)
+function criarData(dataIso) {
+  const [ano, mes, dia] = dataIso.split('-').map(Number)
+  return new Date(ano, mes - 1, dia)
+}
+
+// "2026-09-30" -> "qua., 30/09"
+export function formatarDiaCurto(dataIso) {
+  return formatoDiaCurto.format(criarData(dataIso))
+}
+
+// "2026-09-30" -> "quarta-feira, 30 de setembro"
+export function formatarDiaLongo(dataIso) {
+  return formatoDiaLongo.format(criarData(dataIso))
+}

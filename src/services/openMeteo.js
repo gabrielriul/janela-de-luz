@@ -37,3 +37,58 @@ export async function buscarCidades(nome) {
     fusoHorario: cidade.timezone,
   }))
 }
+
+const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast'
+
+// Variáveis pedidas para cada hora da previsão
+const VARIAVEIS_POR_HORA = [
+  'temperature_2m', // temperatura a 2 m do chão (°C)
+  'precipitation_probability', // chance de chuva (%)
+  'cloud_cover', // cobertura de nuvens (%)
+  'wind_speed_10m', // vento a 10 m (km/h)
+  'wind_gusts_10m', // rajadas de vento (km/h)
+  'weather_code', // código do tempo (padrão WMO)
+  'is_day', // 1 = dia, 0 = noite
+]
+
+// Busca a previsão hora a hora dos próximos 7 dias para uma cidade.
+// Devolve os dados agrupados por dia, que é como a tela exibe.
+export async function buscarPrevisao({ latitude, longitude }) {
+  const parametros = new URLSearchParams({
+    latitude: String(latitude),
+    longitude: String(longitude),
+    hourly: VARIAVEIS_POR_HORA.join(','),
+    daily: 'sunrise,sunset',
+    timezone: 'auto', // horários no fuso da própria cidade
+    forecast_days: '7',
+  })
+
+  const resposta = await fetch(`${FORECAST_URL}?${parametros}`)
+
+  if (!resposta.ok) {
+    throw new Error(`Erro ${resposta.status} ao buscar a previsão`)
+  }
+
+  const { hourly, daily } = await resposta.json()
+
+  // A API devolve uma lista para cada variável, todas na mesma ordem das horas.
+  // Aqui juntamos tudo em um objeto por hora.
+  const horas = hourly.time.map((horario, i) => ({
+    horario, // ex.: "2026-09-27T06:00"
+    data: horario.slice(0, 10), // ex.: "2026-09-27"
+    temperatura: hourly.temperature_2m[i],
+    probabilidadeChuva: hourly.precipitation_probability[i],
+    nuvens: hourly.cloud_cover[i],
+    vento: hourly.wind_speed_10m[i],
+    rajadas: hourly.wind_gusts_10m[i],
+    codigoTempo: hourly.weather_code[i],
+    ehDia: hourly.is_day[i] === 1,
+  }))
+
+  return daily.time.map((data, i) => ({
+    data,
+    nascerDoSol: daily.sunrise[i], // ex.: "2026-09-27T06:05"
+    porDoSol: daily.sunset[i],
+    horas: horas.filter((hora) => hora.data === data),
+  }))
+}

@@ -6,6 +6,7 @@ import EmptyState from './components/EmptyState.jsx'
 import CityList from './components/CityList.jsx'
 import CityListSkeleton from './components/CityListSkeleton.jsx'
 import SelectedCity from './components/SelectedCity.jsx'
+import Forecast from './components/Forecast.jsx'
 import Footer from './components/Footer.jsx'
 import Button from './components/ui/Button.jsx'
 import { buscarCidades } from './services/openMeteo.js'
@@ -39,7 +40,13 @@ function App() {
   // Renderização condicional: escolhe o que mostrar de acordo com o estado atual
   function renderResultado() {
     if (cidadeSelecionada) {
-      return <SelectedCity cidade={cidadeSelecionada} onChange={() => setCidadeSelecionada(null)} />
+      return (
+        <>
+          <SelectedCity cidade={cidadeSelecionada} onChange={() => setCidadeSelecionada(null)} />
+          {/* key: ao trocar de cidade, o React cria um Forecast novo e zera o dia selecionado */}
+          <Forecast key={cidadeSelecionada.id} cidade={cidadeSelecionada} />
+        </>
+      )
     }
 
     if (status === 'carregando') {
