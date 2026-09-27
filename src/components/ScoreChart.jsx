@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import Card from './ui/Card.jsx'
 import { NOMES_DA_LUZ } from '../utils/luz.js'
-import { classificarNota } from '../utils/nota.js'
+import { classificarNota, NOTA_BOA } from '../utils/nota.js'
 import {
   formatarHorario,
   formatarJanela,
@@ -21,7 +21,6 @@ import {
   formatarVelocidade,
 } from '../utils/formatters.js'
 
-const NOTA_BOA = 6 // mesma nota mínima das "melhores janelas"
 const MARCAS_DO_EIXO_X = [0, 3, 6, 9, 12, 15, 18, 21, 24]
 const MARCAS_DO_EIXO_Y = [0, 2, 4, 6, 8, 10]
 
@@ -36,7 +35,7 @@ function formatarMarcaDeHora(hora) {
 }
 
 // Gráfico de colunas com a nota de cada hora do dia (biblioteca Recharts).
-// As horas com nota 6 ou mais ficam em verde; o fundo marca a golden hour e a blue hour.
+// As horas com nota boa (NOTA_BOA ou mais) ficam em verde; o fundo marca a golden hour e a blue hour.
 // A tabela logo abaixo mostra os mesmos números, para quem não enxerga bem o gráfico.
 function ScoreChart({ dia, horaAtual = '', nomeDoModo }) {
   // O Recharts recebe uma lista de objetos; "x" posiciona cada coluna no meio da sua hora
@@ -152,15 +151,15 @@ function ScoreChart({ dia, horaAtual = '', nomeDoModo }) {
       <ul className="chart-legend caption text-muted">
         <li>
           <span className="chart-legend__marca chart-legend__marca--boa" />
-          Nota 6 ou mais
+          Nota {NOTA_BOA} ou mais
         </li>
         <li>
           <span className="chart-legend__marca chart-legend__marca--baixa" />
-          Abaixo de 6
+          Abaixo de {NOTA_BOA}
         </li>
         <li>
           <span className="chart-legend__linha" />
-          Nota 6
+          Nota {NOTA_BOA}
         </li>
         <li>
           <span className="chart-legend__marca chart-legend__marca--golden" />

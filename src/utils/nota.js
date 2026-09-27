@@ -11,6 +11,10 @@
 
 import { NOMES_DA_LUZ } from './luz.js'
 
+// A partir desta nota a hora conta como boa para gravar.
+// É usada na classificação, nas melhores janelas e no gráfico: mudando aqui, muda em tudo.
+export const NOTA_BOA = 6
+
 export const MODOS = {
   externa: {
     nome: 'Externa',
@@ -117,7 +121,7 @@ export function calcularNota(hora, luz, modo) {
 // Traduz a nota em um rótulo e em um tom de cor do design system
 export function classificarNota(nota) {
   if (nota >= 8) return { rotulo: 'Ótima', tom: 'dark' }
-  if (nota >= 6) return { rotulo: 'Boa', tom: 'green' }
+  if (nota >= NOTA_BOA) return { rotulo: 'Boa', tom: 'green' }
   if (nota >= 4) return { rotulo: 'Regular', tom: 'warning' }
   return { rotulo: 'Ruim', tom: 'negative' }
 }
