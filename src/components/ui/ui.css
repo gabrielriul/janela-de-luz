@@ -1,123 +1,214 @@
-/* Componentes base do design system: Button, Card, Badge, Chip, TextInput e Shimmer */
+/*
+  Componentes base do design system Credit Guide × Apple.
+  Cada bloco corresponde a um componente React desta pasta, com os mesmos nomes do design system.
+  Nenhuma cor ou medida solta: tudo vem dos tokens (src/styles/tokens.css), por isso os dois temas
+  funcionam sem mudar nada aqui.
+*/
+
+/* ---------- Estrutura da página: MainContentContainer, PageHeader, SectionTitle, ContentSection ---------- */
+
+/* Margem lateral da página: 16px no celular, 80px a partir do tablet */
+.content-container,
+.content-gutter {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+.content-container {
+  padding-block: 40px;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.page-header__content {
+  max-width: 600px;
+  margin-top: var(--space-1);
+  color: var(--neutral-500);
+}
+
+.section-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Seção padrão: título, filtros, destaque, métricas e conteúdo, um abaixo do outro */
+.content-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  /* ao rolar até a seção, deixa um respiro abaixo da barra fixa do topo (a barra já é descontada
+     pelo scroll-padding-top da página) */
+  scroll-margin-top: var(--space-4);
+}
+
+.content-section__filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.content-section__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ---------- Layout: FlexBetweenLayout e ResponsiveGridList ---------- */
+
+/* Empilha no celular; vira linha com os itens nas pontas a partir do tablet */
+.flex-between {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Grade de cards com 16px entre eles. As colunas vêm das variáveis --cols-* do componente. */
+.grid-list {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(var(--cols-mobile, 1), minmax(0, 1fr));
+}
+
+.grid-list > li {
+  display: flex;
+  min-width: 0;
+}
+
+.grid-list > li > * {
+  flex: 1;
+  min-width: 0;
+}
 
 /* ---------- Button ---------- */
 .btn {
-  height: 48px;
-  padding: 0 var(--space-6);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  white-space: nowrap;
-  border: none;
+  height: 48px;
+  padding: 0 var(--space-6);
+  border: 0;
   border-radius: var(--radius-full);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
   transition:
-    background-color var(--transicao),
-    color var(--transicao),
-    border-color var(--transicao);
+    background-color 200ms,
+    color 200ms,
+    transform 150ms,
+    opacity 200ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn:disabled {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
+  transform: none;
 }
 
+/* primary: a ação principal da tela (uma só por tela) */
 .btn--primary {
   background: var(--green-200);
-  color: var(--neutral-600);
+  color: var(--on-green-200);
 }
 
-.btn--primary:not(:disabled):hover {
-  background: color-mix(in srgb, var(--green-200) 90%, transparent);
-}
-
-.btn--primary:not(:disabled):active {
-  background: color-mix(in srgb, var(--green-200) 80%, transparent);
-}
-
+/* secondary: estilo tingido de verde */
 .btn--secondary {
   background: var(--green-100);
   color: var(--neutral-600);
 }
 
-.btn--secondary:not(:disabled):hover {
-  background: color-mix(in srgb, var(--green-100) 90%, transparent);
+.btn--primary:hover:not(:disabled),
+.btn--secondary:hover:not(:disabled) {
+  opacity: var(--opacity-hover);
 }
 
-.btn--outline {
+.btn--primary:active:not(:disabled),
+.btn--secondary:active:not(:disabled) {
+  opacity: var(--opacity-active);
+}
+
+/* secondary-neutral e ghost: estilo cinza do sistema */
+.btn--secondary-neutral {
+  background: var(--fill-control);
+  color: var(--neutral-600);
+}
+
+.btn--ghost {
   background: transparent;
   color: var(--neutral-600);
-  border: 1px solid var(--neutral-300);
 }
 
-.btn--outline:not(:disabled):hover {
-  border-color: var(--neutral-600);
+.btn--secondary-neutral:hover:not(:disabled),
+.btn--ghost:hover:not(:disabled) {
+  background: var(--fill-control-hover);
 }
 
-/* ---------- Card ---------- */
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-4);
-  background: var(--neutral-100);
-  border: 1px solid var(--neutral-200);
-  border-radius: var(--radius-2xl);
+/* glass: botão que flutua sobre o conteúdo (ex.: setas de rolagem) */
+.btn--glass {
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    var(--shadow-glass),
+    inset 0 0 0 1px var(--glass-stroke);
   color: var(--neutral-600);
 }
 
-.card--gutter-lg {
-  padding: var(--space-8);
+/* compact: 36px, para ações ao lado de títulos e dentro de cards */
+.btn--compact {
+  height: 36px;
+  padding: 0 var(--space-4);
+  font-size: 15px;
+  line-height: 20px;
 }
 
-.card--gutter-none {
+/* icon: botão só com ícone, redondo */
+.btn--icon {
+  width: 48px;
   padding: 0;
 }
 
-/* Card clicável: a sombra no hover indica que dá para interagir */
-.card--clickable {
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    box-shadow var(--transicao),
-    border-color var(--transicao);
-}
-
-.card--clickable:hover {
-  box-shadow: var(--shadow-lg);
-}
-
-@media (min-width: 768px) {
-  .card--gutter-sm {
-    padding: var(--space-6);
-  }
+.btn--compact.btn--icon {
+  width: 36px;
 }
 
 /* ---------- Badge ---------- */
 .badge {
-  min-height: 26px;
-  padding: 0 var(--space-2);
-  font-size: 12px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: var(--space-1);
+  min-height: 26px;
+  padding: 0 10px;
   border-radius: var(--radius-full);
-  font-weight: 500;
   background: var(--green-100);
   color: var(--neutral-600);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.badge--neutral {
-  background: var(--neutral-200);
-  color: var(--neutral-600);
+.badge--ink {
+  background: var(--neutral-600);
+  color: var(--on-neutral-600);
 }
 
-.badge--blue {
+.badge--info {
   background: var(--blue-100);
   color: var(--blue-200);
 }
@@ -132,148 +223,682 @@
   color: var(--negative-200);
 }
 
+/* ---------- Chip ---------- */
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
+  color: var(--neutral-600);
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 200ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chip:hover {
+  background: var(--fill-control-hover);
+}
+
+/* Chip ativo: cápsula escura (tinta) */
+.chip--active,
+.chip--active:hover {
+  background: var(--neutral-600);
+  color: var(--on-neutral-600);
+}
+
+/* Bolinha com um número dentro do chip */
+.chip__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--neutral-100);
+  color: var(--neutral-600);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip--active .chip__count {
+  background: var(--green-200);
+  color: var(--on-green-200);
+}
+
+.chip__detail {
+  color: var(--neutral-500);
+}
+
+/* ---------- SegmentedControl ---------- */
+/* Trilho cinza em cápsula; a opção escolhida é uma "pastilha" branca que desliza */
+.seg {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-self: flex-start;
+  min-width: 180px;
+  max-width: 100%;
+  height: 40px;
+  padding: 3px;
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
+}
+
+.seg__thumb {
+  position: absolute;
+  z-index: -1;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / var(--seg-count));
+  border-radius: var(--radius-full);
+  background: var(--control-thumb);
+  box-shadow: var(--shadow-thumb);
+  transform: translateX(calc(100% * var(--seg-index)));
+  transition: transform 300ms var(--ease-ios);
+}
+
+.seg__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--neutral-600);
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seg__item[aria-checked='true'] {
+  font-weight: 600;
+}
+
+/* ---------- Card ---------- */
+/* Grupo branco sobre a página cinza: sem borda, só uma sombra leve */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-2xl);
+  background: var(--neutral-100);
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  text-align: left;
+}
+
+/* Card usado como botão (as="button") */
+button.card {
+  width: 100%;
+  font: inherit;
+}
+
+.card--lg {
+  padding: var(--space-6);
+}
+
+.card--flush {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* Só card clicável sobe no hover: elevação sempre quer dizer "isto abre algo" */
+.card--clickable {
+  cursor: pointer;
+  transition:
+    box-shadow 200ms,
+    transform 200ms;
+}
+
+.card--clickable:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Card de destaque da ContentSection: fundo verde-claro */
+.card--highlight {
+  gap: var(--space-1);
+  background: var(--green-100);
+}
+
+/* ---------- List ---------- */
+/* Lista agrupada no estilo do iOS: linhas de 44px e divisórias recuadas 16px */
+.list {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-2xl);
+  background: var(--neutral-100);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.list__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: 10px var(--space-4);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.list > li + li > .list__row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--space-4);
+  right: 0;
+  height: 1px;
+  background: var(--separator);
+}
+
+/* Com ícone na frente, a divisória começa no texto, como no iOS */
+.list > li + li > .list__row:has(.list__icon)::before {
+  left: calc(var(--space-4) + 20px + var(--space-3));
+}
+
+.list__row--nav {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.list__row--nav:hover {
+  background: var(--fill-control-hover);
+}
+
+/* A lista corta o que passa da borda arredondada, então o anel de foco fica por dentro */
+.list__row:focus-visible {
+  outline-offset: -2px;
+}
+
+.list__icon,
+.list__chevron {
+  color: var(--neutral-500);
+}
+
+.list__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.list__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.list__sublabel {
+  color: var(--neutral-500);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.list__value {
+  margin-left: auto;
+  color: var(--neutral-500);
+  font-size: 15px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 /* ---------- TextInput ---------- */
 .field {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  min-width: 0;
+  width: 100%;
 }
 
-.text-input {
+.field__label {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+/* Cápsula de 48px no cinza do sistema, sem borda e sem sombra */
+.input {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   width: 100%;
-  height: 50px;
-  padding: 0 var(--space-3);
-  background: var(--neutral-100);
-  border: 1px solid var(--neutral-200);
+  height: 48px;
+  padding: 0 var(--space-4);
   border-radius: var(--radius-full);
-  box-shadow: var(--shadow-xl);
+  background: var(--fill-control);
   color: var(--neutral-500);
 }
 
-.text-input:focus-within {
-  outline: 1px solid var(--green-200);
+/* O foco desenha o anel por fora da cápsula */
+.input:focus-within {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
-.text-input input {
+.input input {
   flex: 1;
   min-width: 0;
-  border: none;
-  outline: none;
+  width: 0; /* sem largura própria: o flex: 1 faz o campo ocupar o espaço que sobra */
+  height: 100%;
+  padding: 0;
+  border: 0;
   background: transparent;
-  font-size: 0.875rem;
+  outline: none;
   color: var(--neutral-600);
+  font-size: 17px;
+  line-height: 22px;
 }
 
-.text-input input:focus-visible {
-  box-shadow: none;
+.input input::placeholder {
+  color: var(--neutral-500);
+  opacity: 1;
 }
 
-.text-input input::placeholder {
+/* Botão de limpar, encostado no fim da cápsula */
+.input .btn {
+  margin-right: calc(var(--space-2) * -1);
   color: var(--neutral-500);
 }
 
-/* ---------- Shimmer (carregamento) ---------- */
+.input--error {
+  box-shadow: inset 0 0 0 1.5px var(--negative-200);
+}
+
+.field__error {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--negative-200);
+}
+
+/* ---------- Shimmer (carregando) ---------- */
+/* Formas cinza no lugar exato do conteúdo que ainda vai chegar, pulsando de leve */
 .shimmer {
   display: block;
-  background-image: linear-gradient(
-    90deg,
-    var(--neutral-200) 25%,
-    var(--neutral-100) 50%,
-    var(--neutral-200) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite linear;
-  border-radius: var(--radius-full);
-}
-
-
-/* ---------- Chip ---------- */
-.chip {
-  position: relative; /* mantém textos .sr-only dentro do chip */
-  display: inline-flex;
   flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  height: 40px;
-  padding: 0 var(--space-4);
-  border: 1px solid var(--neutral-200);
+  max-width: 100%;
+  border-radius: var(--radius-sm);
+  background: var(--fill-control-hover);
+  animation: pulse 1.4s ease-in-out infinite alternate;
+}
+
+.shimmer--round {
   border-radius: var(--radius-full);
-  background: var(--neutral-100);
-  color: var(--neutral-600);
-  font-size: 0.875rem;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  transition:
-    background-color var(--transicao),
-    border-color var(--transicao),
-    color var(--transicao);
 }
 
-.chip:not(:disabled):hover {
-  border-color: var(--neutral-600);
+/* ---------- FeedbackPlaceholder ---------- */
+/* Estado vazio no estilo "conteúdo indisponível" da Apple: ícone grande, título, dica e uma ação */
+.feedback {
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
 }
 
-.chip--active {
-  background: var(--neutral-600);
-  border-color: var(--neutral-600);
-  color: var(--green-200);
+.feedback__icon {
+  color: var(--neutral-500);
 }
 
-.chip:disabled {
-  opacity: var(--opacity-disabled);
-  cursor: not-allowed;
+.feedback__icon.lucide {
+  stroke-width: 1.5;
 }
 
-/* ---------- Métrica (rótulo pequeno + valor em destaque) ---------- */
+.feedback--negative .feedback__icon {
+  color: var(--negative-200);
+}
+
+.feedback__title {
+  margin-top: var(--space-2);
+}
+
+.feedback__description {
+  max-width: 420px;
+  color: var(--neutral-500);
+}
+
+.feedback .btn {
+  margin-top: var(--space-2);
+}
+
+/* ---------- Metric ---------- */
+/* Rótulo pequeno em cinza em cima de um valor de 20px */
 .metric {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  min-width: 0;
 }
 
 .metric__label {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-1);
   font-size: 12px;
-  line-height: 18px;
+  line-height: 16px;
   color: var(--neutral-500);
 }
 
 .metric__value {
-  font-size: 1.25rem;
-  line-height: 1.875rem;
+  font-size: 20px;
+  line-height: 25px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- DataList ---------- */
+/* Pares de rótulo e valor (forma vertical): rótulo cinza em cima, valor embaixo */
+.data-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4) var(--space-6);
+}
+
+.data-list__item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.data-list dt {
+  color: var(--neutral-500);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.data-list dd {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Table ---------- */
+/* Fica dentro de um Card flush: cabeçalho discreto, linhas de 44px separadas por linhas finas */
+.table-scroll {
+  position: relative;
+  overflow-x: auto;
+}
+
+/* A área que rola recebe foco pelo teclado; o card corta o que passa da borda, então o anel fica por dentro */
+.table-scroll:focus-visible {
+  outline-offset: -2px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 15px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.table thead th {
+  height: 36px;
+  padding: 0 var(--space-4);
+  background: var(--neutral-150);
+  color: var(--neutral-500);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.table tbody td,
+.table tbody th {
+  height: 44px;
+  padding: 0 var(--space-4);
+  box-shadow: inset 0 1px 0 var(--separator);
+  text-align: left;
+  font-weight: 400;
+}
+
+.table tbody tr:first-child > * {
+  box-shadow: none;
+}
+
+.table tbody tr:hover > * {
+  background: var(--fill-control-hover);
+}
+
+/* Números alinhados à direita, com algarismos de largura igual */
+.table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- OverflowXContainer ---------- */
+/* Fileira que rola na horizontal: a borda com mais conteúdo some aos poucos (máscara) */
+.overflow-x {
+  position: relative;
+}
+
+.overflow-x__scroller {
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* espaço para o anel de foco não ser cortado */
+  padding: 4px;
+  margin: -4px;
+}
+
+.overflow-x__scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.overflow-x__row {
+  display: flex;
+  gap: var(--space-2);
+  width: max-content;
+}
+
+.overflow-x[data-fade='end'] .overflow-x__scroller {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+}
+
+.overflow-x[data-fade='start'] .overflow-x__scroller {
+  -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 56px), transparent);
+  mask-image: linear-gradient(to left, #000 calc(100% - 56px), transparent);
+}
+
+.overflow-x[data-fade='both'] .overflow-x__scroller {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
+}
+
+/* Setas de vidro: só em telas maiores com mouse; no toque, a rolagem é com o dedo */
+.overflow-x__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: none;
+  color: var(--neutral-600);
+  transform: translateY(-50%);
+}
+
+.overflow-x__arrow:active {
+  transform: translateY(-50%) scale(0.97);
+}
+
+.overflow-x__arrow--start {
+  left: 0;
+}
+
+.overflow-x__arrow--end {
+  right: 0;
+}
+
+/* ---------- Gráficos (tema do design system para o Recharts) ---------- */
+
+/* Faixa que marca a coluna sob o mouse. No escuro o verde-claro já é um tom apagado, então fica sólido. */
+.chart-cursor {
+  fill: var(--green-100);
+  opacity: 0.35;
+}
+
+[data-theme='dark'] .chart-cursor {
+  opacity: 1;
+}
+
+/* Dica do gráfico: flutua sobre o conteúdo, por isso é de vidro */
+.chart-tip {
+  min-width: 168px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
   color: var(--neutral-600);
 }
 
-/* Badge escuro: mesmo par de cores do botão "dark" e do chip ativo */
-.badge--dark {
-  background: var(--neutral-600);
-  color: var(--green-200);
+.chart-tip__head {
+  margin-bottom: var(--space-1);
+  color: var(--neutral-500);
+  font-size: 12px;
+  line-height: 16px;
 }
 
-/* Contador pequeno dentro do Chip */
-.chip__count {
+.chart-tip__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.chart-tip__row b {
+  margin-left: auto;
+  padding-left: var(--space-3);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-tip__swatch {
+  flex-shrink: 0;
+  width: 12px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--chart-primary);
+}
+
+/* Legenda: um traço de 16×4 por série (tracejado para linha tracejada, quadrado para faixa) */
+.legend-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-6);
+}
+
+.legend {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 16px;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: var(--radius-full);
-  background: var(--neutral-200);
-  color: var(--neutral-600);
+  gap: var(--space-2);
+  color: var(--neutral-500);
   font-size: 12px;
+  line-height: 16px;
 }
 
-.chip--active .chip__count {
-  background: var(--green-200);
-  color: var(--neutral-600);
+.legend__swatch {
+  flex-shrink: 0;
+  width: 16px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--chart-primary);
+}
+
+.legend__swatch--dashed {
+  background: repeating-linear-gradient(90deg, currentColor 0 4px, transparent 4px 7px);
+}
+
+.legend__swatch--square {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+/* ---------- Telas a partir do tablet ---------- */
+@media (min-width: 768px) {
+  .content-container,
+  .content-gutter {
+    padding-inline: 80px;
+  }
+
+  .content-section {
+    gap: var(--space-8);
+  }
+
+  .flex-between {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .grid-list {
+    grid-template-columns: repeat(var(--cols-tablet, var(--cols-mobile, 1)), minmax(0, 1fr));
+  }
+
+  .card--lg {
+    padding: var(--space-8);
+  }
+}
+
+@media (min-width: 768px) and (hover: hover) {
+  .overflow-x__arrow:not([hidden]) {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-list {
+    grid-template-columns: repeat(
+      var(--cols-desk, var(--cols-tablet, var(--cols-mobile, 1))),
+      minmax(0, 1fr)
+    );
+  }
+}
+
+/* ---------- Toque: área mínima de 44px ---------- */
+/* Controles desenhados com menos de 44px ganham uma área de toque invisível (::after) */
+@media (pointer: coarse) {
+  .seg__item,
+  .btn--compact:not(.overflow-x__arrow) {
+    position: relative;
+  }
+
+  .chip::after,
+  .seg__item::after,
+  .btn--compact::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
 }
