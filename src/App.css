@@ -179,7 +179,7 @@
 }
 
 /* ---------- Previsão ---------- */
-.day-selector {
+.chip-row {
   display: flex;
   gap: var(--space-2);
   overflow-x: auto;
@@ -199,6 +199,7 @@
 }
 
 .table-scroll {
+  position: relative;
   overflow-x: auto;
 }
 
@@ -226,8 +227,74 @@
   background: var(--neutral-150);
 }
 
-.hourly-table tbody tr.is-night {
+.hourly-table tbody tr.is-night,
+.hourly-table tbody tr.is-past {
   color: var(--neutral-500);
+}
+
+.hourly-table tbody tr.is-past td,
+.hourly-table tbody tr.is-past th {
+  opacity: 0.6;
+}
+
+/* Horas da janela escolhida nos cards de "Melhores janelas" */
+.hourly-table tbody tr.is-highlight {
+  background: var(--green-100);
+}
+
+.hourly-table tbody tr.is-highlight th {
+  box-shadow: inset 3px 0 0 var(--green-300);
+}
+
+/* ---------- Modo de gravação ---------- */
+.mode-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mode-selector__descricao {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.mode-selector__descricao svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* ---------- Melhores janelas ---------- */
+.window-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.window-grid > li {
+  display: flex;
+}
+
+.window-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.window-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+/* Ao rolar até a tabela, deixa um respiro no topo */
+.section--scroll-alvo {
+  scroll-margin-top: var(--space-4);
 }
 
 .weather-cell {
