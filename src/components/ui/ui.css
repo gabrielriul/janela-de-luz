@@ -267,3 +267,64 @@
   align-items: center;
   gap: var(--space-2);
 }
+
+/* ---------- Chip ---------- */
+.chip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-full);
+  background: var(--neutral-100);
+  color: var(--neutral-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--transicao),
+    border-color var(--transicao),
+    color var(--transicao);
+}
+
+.chip:not(:disabled):hover {
+  border-color: var(--neutral-600);
+}
+
+.chip--active {
+  background: var(--neutral-600);
+  border-color: var(--neutral-600);
+  color: var(--green-200);
+}
+
+.chip:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* ---------- Métrica (rótulo pequeno + valor em destaque) ---------- */
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.metric__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--neutral-500);
+}
+
+.metric__value {
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+  font-weight: 600;
+  color: var(--neutral-600);
+}

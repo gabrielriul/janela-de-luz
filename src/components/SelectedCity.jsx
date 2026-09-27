@@ -4,7 +4,7 @@ import Badge from './ui/Badge.jsx'
 import Button from './ui/Button.jsx'
 import { formatarCoordenadas, formatarInteiro, formatarRegiao } from '../utils/formatters.js'
 
-// Resumo da cidade escolhida. É aqui que a previsão hora a hora vai entrar na próxima etapa.
+// Resumo da cidade escolhida: nome, região, coordenadas, altitude e fuso horário
 // onChange: volta para a lista de cidades
 function SelectedCity({ cidade, onChange }) {
   return (
@@ -41,8 +41,6 @@ function SelectedCity({ cidade, onChange }) {
           </Badge>
         )}
       </div>
-
-      <p className="body-sm text-muted">A previsão hora a hora desta cidade vai aparecer aqui.</p>
     </Card>
   )
 }

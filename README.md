@@ -29,7 +29,7 @@ O app é uma SPA (Single Page Application) feita em React que consome dados de u
 
 - [x] Layout base e busca de cidade (interface)
 - [x] Busca de cidades na Geocoding API (carregando, sem resultados, erro e seleção da cidade)
-- [ ] Previsão hora a hora na Forecast API
+- [x] Previsão hora a hora na Forecast API (7 dias, nascer e pôr do sol, golden hour e blue hour)
 - [ ] Nota de gravação por hora com `useMemo` e modos de gravação
 - [ ] Gráfico hora a hora com Recharts
 - [ ] Locações favoritas salvas no navegador
@@ -80,8 +80,9 @@ Os commits seguem o padrão [Conventional Commits](https://www.conventionalcommi
 src/
 ├── components/   # componentes da interface (Header, SearchBar, EmptyState, Footer...)
 │   └── ui/       # componentes base do design system (Button, Card, Badge, TextInput, Spinner, Shimmer)
+├── hooks/        # hooks personalizados (usePrevisao.js)
 ├── services/     # comunicação com a API (openMeteo.js)
-├── utils/        # funções de formatação no padrão pt-BR (formatters.js)
+├── utils/        # funções puras: formatação pt-BR, janelas de luz e descrição do tempo
 ├── App.jsx       # componente principal: layout e estado da página
 ├── App.css       # estilos dos componentes
 ├── index.css     # estilos globais e variáveis de cor
@@ -100,6 +101,7 @@ Conforme pedido no enunciado, registro aqui como usei IA generativa no desenvolv
 | Versionamento e CI/CD | Claude | Commits no repositório e criação do workflow de CI/CD (GitHub Actions + GitHub Pages) | Ativação do GitHub Pages nas configurações do repositório; conceitos: integração contínua, deploy contínuo e build com Vite |
 | Design system | Claude | Aplicação do meu design system (cores, tipografia, espaçamento, raios) e criação dos componentes base em `components/ui` | Revisão do código; conceitos: variáveis CSS, componentes reutilizáveis com props e variantes, prop `children` |
 | Fluxo de branches | Claude | Criação da branch `develop`, separação dos workflows de CI e deploy e template de Pull Request | Definição do fluxo `develop` → PR → `main` e configuração da regra de proteção da `main` no GitHub |
+| Etapa 3 — previsão hora a hora | Claude | Integração com a Forecast API, hook `usePrevisao`, seleção de dia, resumo do dia, cálculo de golden/blue hour e tabela hora a hora | Revisão do código e teste no navegador; conceitos: `useEffect` com função de limpeza, hook personalizado, estado derivado, `key` para reiniciar um componente |
 | Etapa 2 — busca de cidades | Claude | Integração com a Geocoding API da Open-Meteo, lista de cidades, estados de carregamento, erro e sem resultados | Revisão do código e teste no navegador; conceitos: `fetch` com `async/await`, `try/catch`, estado da requisição, `map` com `key` e renderização condicional |
 
 Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na mensagem.

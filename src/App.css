@@ -177,3 +177,72 @@
     align-items: stretch;
   }
 }
+
+/* ---------- Previsão ---------- */
+.day-selector {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: 4px; /* espaço para o anel de foco não ser cortado */
+  margin: -4px;
+  scrollbar-width: thin;
+}
+
+.day-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-6);
+}
+
+.hourly-card {
+  overflow: hidden;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.hourly-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.hourly-table th,
+.hourly-table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: 500;
+}
+
+.hourly-table thead th {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--neutral-500);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.hourly-table tbody tr:nth-child(even) {
+  background: var(--neutral-150);
+}
+
+.hourly-table tbody tr.is-night {
+  color: var(--neutral-500);
+}
+
+.weather-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+@media (max-width: 767px) {
+  .hide-mobile {
+    display: none;
+  }
+
+  .hourly-table th,
+  .hourly-table td {
+    padding: var(--space-2) var(--space-3);
+  }
+}
