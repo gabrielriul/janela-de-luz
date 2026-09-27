@@ -1,7 +1,9 @@
 {
   "name": "janela-de-luz",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Janela de Luz: planejador de gravações externas com previsão hora a hora, golden hour e nota de gravação. Projeto 1 da disciplina ES47B (UTFPR-CP).",
+  "author": "Gabriel Riul Perissé",
   "type": "module",
   "scripts": {
     "dev": "vite",

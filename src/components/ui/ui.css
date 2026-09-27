@@ -1,7 +1,9 @@
-/* Componentes base do design system: Button, Card, Badge, TextInput, Spinner e Shimmer */
+/* Componentes base do design system: Button, Card, Badge, Chip, TextInput e Shimmer */
 
 /* ---------- Button ---------- */
 .btn {
+  height: 48px;
+  padding: 0 var(--space-6);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -21,22 +23,6 @@
 .btn:disabled {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
-}
-
-.btn--size-md {
-  height: 48px;
-  padding: 0 var(--space-6);
-}
-
-.btn--size-icon {
-  width: 48px;
-  height: 48px;
-  padding: 0;
-}
-
-.btn--size-text {
-  height: 40px;
-  padding: 0;
 }
 
 .btn--primary {
@@ -61,15 +47,6 @@
   background: color-mix(in srgb, var(--green-100) 90%, transparent);
 }
 
-.btn--dark {
-  background: var(--neutral-600);
-  color: var(--green-200);
-}
-
-.btn--dark:not(:disabled):hover {
-  background: color-mix(in srgb, var(--neutral-600) 90%, transparent);
-}
-
 .btn--outline {
   background: transparent;
   color: var(--neutral-600);
@@ -78,25 +55,6 @@
 
 .btn--outline:not(:disabled):hover {
   border-color: var(--neutral-600);
-}
-
-.btn--ghost {
-  background: transparent;
-  color: var(--neutral-600);
-}
-
-.btn--ghost:not(:disabled):hover {
-  background: color-mix(in srgb, var(--neutral-600) 5%, transparent);
-}
-
-.btn--text {
-  background: transparent;
-  color: var(--green-300);
-  text-underline-offset: 4px;
-}
-
-.btn--text:not(:disabled):hover {
-  text-decoration: underline;
 }
 
 /* ---------- Card ---------- */
@@ -141,6 +99,9 @@
 
 /* ---------- Badge ---------- */
 .badge {
+  min-height: 26px;
+  padding: 0 var(--space-2);
+  font-size: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -149,18 +110,6 @@
   font-weight: 500;
   background: var(--green-100);
   color: var(--neutral-600);
-}
-
-.badge--sm {
-  min-height: 26px;
-  padding: 0 var(--space-2);
-  font-size: 12px;
-}
-
-.badge--lg {
-  min-height: 40px;
-  padding: 0 var(--space-4);
-  font-size: 0.875rem;
 }
 
 .badge--neutral {
@@ -227,28 +176,7 @@
   color: var(--neutral-500);
 }
 
-/* ---------- Loading: Spinner e Shimmer ---------- */
-.spinner {
-  display: inline-block;
-  border-style: solid;
-  border-color: currentColor;
-  border-right-color: transparent;
-  border-radius: var(--radius-full);
-  animation: spin 0.6s linear infinite;
-}
-
-.spinner--sm {
-  width: 16px;
-  height: 16px;
-  border-width: 2px;
-}
-
-.spinner--lg {
-  width: 40px;
-  height: 40px;
-  border-width: 4px;
-}
-
+/* ---------- Shimmer (carregamento) ---------- */
 .shimmer {
   display: block;
   background-image: linear-gradient(
@@ -262,11 +190,6 @@
   border-radius: var(--radius-full);
 }
 
-.spinner-wrapper {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
 
 /* ---------- Chip ---------- */
 .chip {

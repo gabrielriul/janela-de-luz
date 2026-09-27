@@ -1,11 +1,10 @@
 import './ui.css'
 
-// Botão em formato de pílula.
-// variant: 'primary' | 'secondary' | 'dark' | 'outline' | 'ghost' | 'text'
-// size: 'md' | 'icon' | 'text'
+// Botão em formato de pílula, com 48px de altura.
+// variant: 'primary' (ação principal) | 'secondary' | 'outline'
 // As demais props (onClick, type, disabled, aria-label...) vão direto para o <button>.
-function Button({ variant = 'primary', size = 'md', className = '', children, ...props }) {
-  const classes = `btn btn--${variant} btn--size-${size} ${className}`.trim()
+function Button({ variant = 'primary', className = '', children, ...props }) {
+  const classes = `btn btn--${variant} ${className}`.trim()
 
   return (
     <button type="button" className={classes} {...props}>
