@@ -1,7 +1,7 @@
 import Card from './ui/Card.jsx'
 import Badge from './ui/Badge.jsx'
+import ScoreBadge from './ScoreBadge.jsx'
 import WeatherIcon from './WeatherIcon.jsx'
-import { classificarLuz } from '../utils/luz.js'
 import { descreverTempo } from '../utils/clima.js'
 import {
   formatarHorario,
@@ -10,8 +10,21 @@ import {
   formatarVelocidade,
 } from '../utils/formatters.js'
 
-// Tabela com as 24 horas do dia escolhido
-function HourlyTable({ horas, janelas }) {
+// Monta as classes de cada linha: noite, horário que já passou e janela destacada
+function classesDaLinha(hora, horaAtual, destaque) {
+  const classes = []
+  if (hora.luz === 'noite') classes.push('is-night')
+  if (hora.horario < horaAtual) classes.push('is-past')
+  if (destaque && hora.horario >= destaque.inicio && hora.horario <= destaque.fim) {
+    classes.push('is-highlight')
+  }
+  return classes.join(' ') || undefined
+}
+
+// Tabela com as 24 horas do dia escolhido, já com a luz e a nota de cada hora.
+// horaAtual: horas antes dela ficam apagadas
+// destaque: janela escolhida nos cards de "Melhores janelas" (ou null)
+function HourlyTable({ horas, horaAtual = '', destaque = null }) {
   return (
     <Card gutter="none" className="hourly-card">
       <div className="table-scroll">
@@ -20,6 +33,7 @@ function HourlyTable({ horas, janelas }) {
           <thead>
             <tr>
               <th scope="col">Hora</th>
+              <th scope="col">Nota</th>
               <th scope="col">Tempo</th>
               <th scope="col">Temperatura</th>
               <th scope="col">Nuvens</th>
@@ -29,28 +43,27 @@ function HourlyTable({ horas, janelas }) {
             </tr>
           </thead>
           <tbody>
-            {horas.map((hora) => {
-              const luz = classificarLuz(hora.horario, janelas)
-
-              return (
-                <tr key={hora.horario} className={luz === 'noite' ? 'is-night' : undefined}>
-                  <th scope="row">{formatarHorario(hora.horario)}</th>
-                  <td>
-                    <span className="weather-cell">
-                      <WeatherIcon codigo={hora.codigoTempo} ehDia={hora.ehDia} />
-                      <span className="hide-mobile">{descreverTempo(hora.codigoTempo)}</span>
-                    </span>
-                  </td>
-                  <td>{formatarTemperatura(hora.temperatura)}</td>
-                  <td>{formatarPorcentagem(hora.nuvens)}</td>
-                  <td>{formatarPorcentagem(hora.probabilidadeChuva)}</td>
-                  <td>{formatarVelocidade(hora.vento)}</td>
-                  <td>
-                    <LightLabel luz={luz} />
-                  </td>
-                </tr>
-              )
-            })}
+            {horas.map((hora) => (
+              <tr key={hora.horario} className={classesDaLinha(hora, horaAtual, destaque)}>
+                <th scope="row">{formatarHorario(hora.horario)}</th>
+                <td>
+                  <ScoreBadge nota={hora.nota} motivos={hora.motivos} />
+                </td>
+                <td>
+                  <span className="weather-cell">
+                    <WeatherIcon codigo={hora.codigoTempo} ehDia={hora.ehDia} />
+                    <span className="hide-mobile">{descreverTempo(hora.codigoTempo)}</span>
+                  </span>
+                </td>
+                <td>{formatarTemperatura(hora.temperatura)}</td>
+                <td>{formatarPorcentagem(hora.nuvens)}</td>
+                <td>{formatarPorcentagem(hora.probabilidadeChuva)}</td>
+                <td>{formatarVelocidade(hora.vento)}</td>
+                <td>
+                  <LightLabel luz={hora.luz} />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

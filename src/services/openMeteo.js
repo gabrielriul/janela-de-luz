@@ -52,13 +52,14 @@ const VARIAVEIS_POR_HORA = [
 ]
 
 // Busca a previsão hora a hora dos próximos 7 dias para uma cidade.
-// Devolve os dados agrupados por dia, que é como a tela exibe.
+// Devolve o horário atual da cidade e os dados agrupados por dia, que é como a tela exibe.
 export async function buscarPrevisao({ latitude, longitude }) {
   const parametros = new URLSearchParams({
     latitude: String(latitude),
     longitude: String(longitude),
     hourly: VARIAVEIS_POR_HORA.join(','),
     daily: 'sunrise,sunset',
+    current: 'temperature_2m', // usado só para saber a hora atual na cidade
     timezone: 'auto', // horários no fuso da própria cidade
     forecast_days: '7',
   })
@@ -69,7 +70,7 @@ export async function buscarPrevisao({ latitude, longitude }) {
     throw new Error(`Erro ${resposta.status} ao buscar a previsão`)
   }
 
-  const { hourly, daily } = await resposta.json()
+  const { hourly, daily, current } = await resposta.json()
 
   // A API devolve uma lista para cada variável, todas na mesma ordem das horas.
   // Aqui juntamos tudo em um objeto por hora.
@@ -85,10 +86,15 @@ export async function buscarPrevisao({ latitude, longitude }) {
     ehDia: hourly.is_day[i] === 1,
   }))
 
-  return daily.time.map((data, i) => ({
+  const dias = daily.time.map((data, i) => ({
     data,
     nascerDoSol: daily.sunrise[i], // ex.: "2026-09-27T06:05"
     porDoSol: daily.sunset[i],
     horas: horas.filter((hora) => hora.data === data),
   }))
+
+  return {
+    agora: current.time, // ex.: "2026-09-27T14:45", no fuso da cidade
+    dias,
+  }
 }

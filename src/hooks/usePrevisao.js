@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { buscarPrevisao } from '../services/openMeteo.js'
 
 // Hook personalizado: busca a previsão de uma cidade e informa se está carregando ou deu erro.
-// Uso: const { dias, status, recarregar } = usePrevisao(cidade)
+// Uso: const { dias, agora, status, recarregar } = usePrevisao(cidade)
 export function usePrevisao(cidade) {
   const [tentativa, setTentativa] = useState(0) // aumenta para forçar uma nova busca
-  const [resposta, setResposta] = useState({ chave: null, dias: [], erro: false })
+  const [resposta, setResposta] = useState({ chave: null, dias: [], agora: null, erro: false })
 
   // Identifica a busca atual: muda quando a cidade ou a tentativa mudam
   const chave = `${cidade.latitude},${cidade.longitude}#${tentativa}`
@@ -17,12 +17,12 @@ export function usePrevisao(cidade) {
     let ignorar = false
 
     buscarPrevisao(cidade)
-      .then((dias) => {
-        if (!ignorar) setResposta({ chave, dias, erro: false })
+      .then(({ dias, agora }) => {
+        if (!ignorar) setResposta({ chave, dias, agora, erro: false })
       })
       .catch((erro) => {
         console.error(erro)
-        if (!ignorar) setResposta({ chave, dias: [], erro: true })
+        if (!ignorar) setResposta({ chave, dias: [], agora: null, erro: true })
       })
 
     // Função de limpeza: o React chama antes de rodar o efeito de novo ou ao desmontar
@@ -41,5 +41,5 @@ export function usePrevisao(cidade) {
     setTentativa((valor) => valor + 1)
   }
 
-  return { dias: resposta.dias, status, recarregar }
+  return { dias: resposta.dias, agora: resposta.agora, status, recarregar }
 }

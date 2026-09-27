@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CircleAlert, MapPin, SearchX } from 'lucide-react'
 import Header from './components/Header.jsx'
 import SearchBar from './components/SearchBar.jsx'
@@ -6,10 +6,12 @@ import EmptyState from './components/EmptyState.jsx'
 import CityList from './components/CityList.jsx'
 import CityListSkeleton from './components/CityListSkeleton.jsx'
 import SelectedCity from './components/SelectedCity.jsx'
+import SavedLocations from './components/SavedLocations.jsx'
 import Forecast from './components/Forecast.jsx'
 import Footer from './components/Footer.jsx'
 import Button from './components/ui/Button.jsx'
 import { buscarCidades } from './services/openMeteo.js'
+import { useFavoritos } from './hooks/useFavoritos.js'
 import './App.css'
 
 // Componente principal: organiza o layout e guarda o estado compartilhado da página
@@ -19,6 +21,12 @@ function App() {
   // Situação da busca: 'inicial' | 'carregando' | 'sucesso' | 'erro'
   const [status, setStatus] = useState('inicial')
   const [cidadeSelecionada, setCidadeSelecionada] = useState(null)
+  const { favoritos, ehFavorita, alternarFavorito } = useFavoritos()
+
+  // O título da aba do navegador acompanha a cidade escolhida (manipulação do DOM fora do React)
+  useEffect(() => {
+    document.title = cidadeSelecionada ? `${cidadeSelecionada.nome} · Janela de Luz` : 'Janela de Luz'
+  }, [cidadeSelecionada])
 
   // Chamada quando o usuário envia a busca. É assíncrona porque espera a resposta da API.
   async function handleSearch(termo) {
@@ -42,7 +50,12 @@ function App() {
     if (cidadeSelecionada) {
       return (
         <>
-          <SelectedCity cidade={cidadeSelecionada} onChange={() => setCidadeSelecionada(null)} />
+          <SelectedCity
+            cidade={cidadeSelecionada}
+            onChange={() => setCidadeSelecionada(null)}
+            ehFavorita={ehFavorita(cidadeSelecionada)}
+            onToggleFavorito={() => alternarFavorito(cidadeSelecionada)}
+          />
           {/* key: ao trocar de cidade, o React cria um Forecast novo e zera o dia selecionado */}
           <Forecast key={cidadeSelecionada.id} cidade={cidadeSelecionada} />
         </>
@@ -79,14 +92,18 @@ function App() {
     }
 
     if (status === 'sucesso') {
-      return <CityList cidades={cidades} onSelect={setCidadeSelecionada} />
+      return <CityList cidades={cidades} onSelect={setCidadeSelecionada} ehFavorita={ehFavorita} />
     }
 
     return (
       <EmptyState
         icon={MapPin}
         titulo="Nenhuma cidade selecionada"
-        texto="Busque uma cidade para ver as melhores horas para gravar nos próximos 7 dias."
+        texto={
+          favoritos.length > 0
+            ? 'Busque uma cidade ou escolha uma das locações salvas.'
+            : 'Busque uma cidade para ver as melhores horas para gravar nos próximos 7 dias.'
+        }
       />
     )
   }
@@ -105,6 +122,10 @@ function App() {
         </section>
 
         <SearchBar onSearch={handleSearch} carregando={status === 'carregando'} />
+
+        {!cidadeSelecionada && (
+          <SavedLocations favoritos={favoritos} onSelect={setCidadeSelecionada} />
+        )}
 
         {renderResultado()}
       </main>

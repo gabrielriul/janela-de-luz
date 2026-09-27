@@ -84,3 +84,28 @@ export function formatarDiaCurto(dataIso) {
 export function formatarDiaLongo(dataIso) {
   return formatoDiaLongo.format(criarData(dataIso))
 }
+
+const formatoNota = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+})
+
+// 8.46 -> "8,5"
+export function formatarNota(nota) {
+  return formatoNota.format(nota)
+}
+
+// Nome curto de um dia da previsão: os dois primeiros viram "Hoje" e "Amanhã"
+export function formatarNomeDoDia(dataIso, indice) {
+  if (indice === 0) return 'Hoje'
+  if (indice === 1) return 'Amanhã'
+  return formatarDiaCurto(dataIso)
+}
+
+// Janela de horas cheias: do início da primeira hora ao fim da última
+// ("2026-09-27T16:00", "2026-09-27T18:00") -> "16:00–19:00"
+export function formatarJanela(inicioIso, ultimaHoraIso) {
+  const [horas, minutos] = ultimaHoraIso.slice(11, 16).split(':').map(Number)
+  const fim = (horas * 60 + minutos + 60) % (24 * 60)
+  return `${formatarHorario(inicioIso)}–${formatarMinutos(fim)}`
+}

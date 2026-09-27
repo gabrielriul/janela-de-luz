@@ -270,6 +270,7 @@
 
 /* ---------- Chip ---------- */
 .chip {
+  position: relative; /* mantém textos .sr-only dentro do chip */
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -326,5 +327,30 @@
   font-size: 1.25rem;
   line-height: 1.875rem;
   font-weight: 600;
+  color: var(--neutral-600);
+}
+
+/* Badge escuro: mesmo par de cores do botão "dark" e do chip ativo */
+.badge--dark {
+  background: var(--neutral-600);
+  color: var(--green-200);
+}
+
+/* Contador pequeno dentro do Chip */
+.chip__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--neutral-200);
+  color: var(--neutral-600);
+  font-size: 12px;
+}
+
+.chip--active .chip__count {
+  background: var(--green-200);
   color: var(--neutral-600);
 }

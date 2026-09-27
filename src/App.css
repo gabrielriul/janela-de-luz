@@ -179,7 +179,7 @@
 }
 
 /* ---------- Previsão ---------- */
-.day-selector {
+.chip-row {
   display: flex;
   gap: var(--space-2);
   overflow-x: auto;
@@ -199,6 +199,7 @@
 }
 
 .table-scroll {
+  position: relative;
   overflow-x: auto;
 }
 
@@ -226,8 +227,74 @@
   background: var(--neutral-150);
 }
 
-.hourly-table tbody tr.is-night {
+.hourly-table tbody tr.is-night,
+.hourly-table tbody tr.is-past {
   color: var(--neutral-500);
+}
+
+.hourly-table tbody tr.is-past td,
+.hourly-table tbody tr.is-past th {
+  opacity: 0.6;
+}
+
+/* Horas da janela escolhida nos cards de "Melhores janelas" */
+.hourly-table tbody tr.is-highlight {
+  background: var(--green-100);
+}
+
+.hourly-table tbody tr.is-highlight th {
+  box-shadow: inset 3px 0 0 var(--green-300);
+}
+
+/* ---------- Modo de gravação ---------- */
+.mode-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mode-selector__descricao {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.mode-selector__descricao svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* ---------- Melhores janelas ---------- */
+.window-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.window-grid > li {
+  display: flex;
+}
+
+.window-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.window-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+/* Ao rolar até a tabela, deixa um respiro no topo */
+.section--scroll-alvo {
+  scroll-margin-top: var(--space-4);
 }
 
 .weather-cell {
@@ -244,5 +311,114 @@
   .hourly-table th,
   .hourly-table td {
     padding: var(--space-2) var(--space-3);
+  }
+}
+
+/* ---------- Gráfico ---------- */
+.chart-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.chart-header__titulo {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+}
+
+.chart-area {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Números dos eixos alinhados */
+.chart-area .recharts-cartesian-axis-tick-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chart-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chart-legend__marca {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.chart-legend__marca--boa {
+  background: var(--green-300);
+}
+
+.chart-legend__marca--baixa {
+  background: var(--neutral-300);
+}
+
+.chart-legend__marca--golden {
+  background: var(--warning-100);
+  box-shadow: inset 0 0 0 1px var(--warning-200);
+}
+
+.chart-legend__marca--blue {
+  background: var(--blue-100);
+  box-shadow: inset 0 0 0 1px var(--blue-200);
+}
+
+.chart-legend__linha {
+  width: 14px;
+  height: 1px;
+  background: var(--neutral-500);
+}
+
+.chart-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--neutral-100);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  color: var(--neutral-600);
+}
+
+.chart-tooltip__valor strong {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* ---------- Locações salvas e ações da cidade ---------- */
+.chip-row--quebra {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.selected-city__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ---------- Menos movimento para quem prefere ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

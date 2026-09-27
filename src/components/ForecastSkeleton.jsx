@@ -18,7 +18,7 @@ function ForecastSkeleton() {
         </span>
       </div>
 
-      <div className="day-selector">
+      <div className="chip-row">
         {dias.map((indice) => (
           <Shimmer key={indice} width={88} height={40} />
         ))}

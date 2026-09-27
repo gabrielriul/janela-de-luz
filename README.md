@@ -30,9 +30,37 @@ O app é uma SPA (Single Page Application) feita em React que consome dados de u
 - [x] Layout base e busca de cidade (interface)
 - [x] Busca de cidades na Geocoding API (carregando, sem resultados, erro e seleção da cidade)
 - [x] Previsão hora a hora na Forecast API (7 dias, nascer e pôr do sol, golden hour e blue hour)
-- [ ] Nota de gravação por hora com `useMemo` e modos de gravação
-- [ ] Gráfico hora a hora com Recharts
-- [ ] Locações favoritas salvas no navegador
+- [x] Nota de gravação por hora com `useMemo`, modos de gravação (externa, drone e golden hour) e melhores janelas da semana
+- [x] Gráfico hora a hora com Recharts (nota de cada hora, faixas de golden e blue hour, dica ao passar o mouse)
+- [x] Locações favoritas salvas no navegador (`localStorage`), com o último modo de gravação lembrado entre visitas
+
+## Como a nota de gravação funciona
+
+Cada hora recebe uma nota de 0 a 10 (`src/utils/nota.js`):
+
+1. Começa em 10.
+2. Perde pontos pela chance de chuva, pelo vento acima do limite do modo e pela cobertura de nuvens.
+3. Ganha bônus na golden hour ou na blue hour, quando o modo valoriza essa luz.
+4. Respeita a nota máxima de cada tipo de luz no modo (por exemplo, à noite o drone fica com 0).
+5. Trovoadas limitam a nota a 1, e no modo drone rajadas acima de 38 km/h zeram a nota.
+
+| Modo | O que pesa mais |
+| --- | --- |
+| Externa | Chuva e vento forte (ruído no áudio). A noite fica limitada a 2. |
+| Drone | Vento e rajadas. Voo à noite fica com 0. |
+| Golden hour | Céu aberto no nascer e no pôr do sol. Fora dessas horas a nota máxima é 4. |
+
+As **melhores janelas** são sequências de horas seguidas com nota 6 ou mais, ordenadas pela nota média (`src/utils/avaliacao.js`). Horas que já passaram não entram.
+
+### Onde está o `useMemo`
+
+Em `src/components/Forecast.jsx`. As 168 notas da semana (7 dias × 24 horas) e as melhores janelas ficam guardadas com `useMemo` e só são recalculadas quando chega uma previsão nova ou quando o modo de gravação muda. Trocar o dia na tabela ou destacar uma janela não refaz a conta.
+
+### Onde está o Recharts
+
+Em `src/components/ScoreChart.jsx`: um gráfico de colunas com a nota de cada hora do dia escolhido. As horas com nota 6 ou mais ficam em verde, a linha marca a nota 6 e o fundo destaca a golden hour e a blue hour. A tabela logo abaixo mostra os mesmos números.
+
+O gráfico é carregado com `lazy` e `Suspense` (`src/components/Forecast.jsx`): o código do Recharts só é baixado quando o gráfico aparece, o que deixou o arquivo JavaScript inicial com cerca de 250 kB em vez de 620 kB.
 
 ## Como rodar
 
@@ -80,9 +108,9 @@ Os commits seguem o padrão [Conventional Commits](https://www.conventionalcommi
 src/
 ├── components/   # componentes da interface (Header, SearchBar, EmptyState, Footer...)
 │   └── ui/       # componentes base do design system (Button, Card, Badge, TextInput, Spinner, Shimmer)
-├── hooks/        # hooks personalizados (usePrevisao.js)
+├── hooks/        # hooks personalizados (usePrevisao, useFavoritos, useArmazenamentoLocal)
 ├── services/     # comunicação com a API (openMeteo.js)
-├── utils/        # funções puras: formatação pt-BR, janelas de luz e descrição do tempo
+├── utils/        # funções puras: nota de gravação, melhores janelas, luz, clima e formatação pt-BR
 ├── App.jsx       # componente principal: layout e estado da página
 ├── App.css       # estilos dos componentes
 ├── index.css     # estilos globais e variáveis de cor
@@ -100,9 +128,12 @@ Conforme pedido no enunciado, registro aqui como usei IA generativa no desenvolv
 | Etapa 1 — layout base | Claude | Geração da estrutura inicial dos componentes e do CSS | Revisão do código; conceitos: componentes, props, estado com `useState`, componente controlado e renderização condicional |
 | Versionamento e CI/CD | Claude | Commits no repositório e criação do workflow de CI/CD (GitHub Actions + GitHub Pages) | Ativação do GitHub Pages nas configurações do repositório; conceitos: integração contínua, deploy contínuo e build com Vite |
 | Design system | Claude | Aplicação do meu design system (cores, tipografia, espaçamento, raios) e criação dos componentes base em `components/ui` | Revisão do código; conceitos: variáveis CSS, componentes reutilizáveis com props e variantes, prop `children` |
+| Etapa 2 — busca de cidades | Claude | Integração com a Geocoding API da Open-Meteo, lista de cidades, estados de carregamento, erro e sem resultados | Revisão do código e teste no navegador; conceitos: `fetch` com `async/await`, `try/catch`, estado da requisição, `map` com `key` e renderização condicional |
 | Fluxo de branches | Claude | Criação da branch `develop`, separação dos workflows de CI e deploy e template de Pull Request | Definição do fluxo `develop` → PR → `main` e configuração da regra de proteção da `main` no GitHub |
 | Etapa 3 — previsão hora a hora | Claude | Integração com a Forecast API, hook `usePrevisao`, seleção de dia, resumo do dia, cálculo de golden/blue hour e tabela hora a hora | Revisão do código e teste no navegador; conceitos: `useEffect` com função de limpeza, hook personalizado, estado derivado, `key` para reiniciar um componente |
-| Etapa 2 — busca de cidades | Claude | Integração com a Geocoding API da Open-Meteo, lista de cidades, estados de carregamento, erro e sem resultados | Revisão do código e teste no navegador; conceitos: `fetch` com `async/await`, `try/catch`, estado da requisição, `map` com `key` e renderização condicional |
+| Etapa 4 — nota de gravação | Claude | Regras da nota por modo, melhores janelas da semana, `useMemo` no `Forecast`, seleção de modo e destaque da janela na tabela | Revisão do código e teste no navegador; conceitos: `useMemo` e dependências, `useRef` para rolar até a tabela, funções puras e objeto de configuração por modo |
+| Etapa 5 — gráfico | Claude | Gráfico de colunas com Recharts seguindo o design system, dica ao passar o mouse e carregamento sob demanda com `lazy` | Revisão do código e teste no navegador; conceitos: componentes do Recharts (`BarChart`, `Bar`, `Cell`, `ReferenceArea`, `Tooltip`), `lazy` e `Suspense`, divisão do código em partes (code splitting) |
+| Etapa 6 — favoritos e acabamento | Claude | Locações salvas com `localStorage`, modo lembrado entre visitas, título da aba com a cidade, respeito à preferência de menos movimento e metadados de compartilhamento | Revisão do código e teste no navegador; conceitos: `localStorage` e JSON, inicialização preguiçosa do `useState`, hook personalizado reaproveitável, `useEffect` para mexer no DOM (`document.title`), acessibilidade com `prefers-reduced-motion` |
 
 Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na mensagem.
 

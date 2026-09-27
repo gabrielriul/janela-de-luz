@@ -2,6 +2,9 @@
 // Golden hour: luz dourada, cerca de 1 hora depois do nascer e 1 hora antes do pôr do sol.
 // Blue hour: luz azulada, cerca de 30 minutos antes do nascer e depois do pôr do sol.
 
+// Nome de cada tipo de luz, para exibir na tela
+export const NOMES_DA_LUZ = { dia: 'Dia', golden: 'Golden hour', blue: 'Blue hour', noite: 'Noite' }
+
 const DURACAO_GOLDEN_HOUR = 60 // minutos
 const DURACAO_BLUE_HOUR = 30 // minutos
 
