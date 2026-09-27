@@ -78,8 +78,72 @@
   color: var(--neutral-600);
 }
 
+.empty-state__icon--negative {
+  background: var(--negative-100);
+  color: var(--negative-200);
+}
+
 .empty-state .btn {
   margin-top: var(--space-2);
+}
+
+/* ---------- Seções ---------- */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* ---------- Lista de cidades ---------- */
+.city-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.city-grid > li {
+  display: flex;
+}
+
+.city-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.city-card__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ---------- Cidade selecionada ---------- */
+.selected-city__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.selected-city__title {
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 /* ---------- Footer ---------- */

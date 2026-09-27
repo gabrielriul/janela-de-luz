@@ -28,7 +28,7 @@ O app é uma SPA (Single Page Application) feita em React que consome dados de u
 ## Funcionalidades
 
 - [x] Layout base e busca de cidade (interface)
-- [ ] Busca de cidades na Geocoding API
+- [x] Busca de cidades na Geocoding API (carregando, sem resultados, erro e seleção da cidade)
 - [ ] Previsão hora a hora na Forecast API
 - [ ] Nota de gravação por hora com `useMemo` e modos de gravação
 - [ ] Gráfico hora a hora com Recharts
@@ -59,6 +59,8 @@ O workflow [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) roda no 
 src/
 ├── components/   # componentes da interface (Header, SearchBar, EmptyState, Footer...)
 │   └── ui/       # componentes base do design system (Button, Card, Badge, TextInput, Spinner, Shimmer)
+├── services/     # comunicação com a API (openMeteo.js)
+├── utils/        # funções de formatação no padrão pt-BR (formatters.js)
 ├── App.jsx       # componente principal: layout e estado da página
 ├── App.css       # estilos dos componentes
 ├── index.css     # estilos globais e variáveis de cor
@@ -76,6 +78,7 @@ Conforme pedido no enunciado, registro aqui como usei IA generativa no desenvolv
 | Etapa 1 — layout base | Claude | Geração da estrutura inicial dos componentes e do CSS | Revisão do código; conceitos: componentes, props, estado com `useState`, componente controlado e renderização condicional |
 | Versionamento e CI/CD | Claude | Commits no repositório e criação do workflow de CI/CD (GitHub Actions + GitHub Pages) | Ativação do GitHub Pages nas configurações do repositório; conceitos: integração contínua, deploy contínuo e build com Vite |
 | Design system | Claude | Aplicação do meu design system (cores, tipografia, espaçamento, raios) e criação dos componentes base em `components/ui` | Revisão do código; conceitos: variáveis CSS, componentes reutilizáveis com props e variantes, prop `children` |
+| Etapa 2 — busca de cidades | Claude | Integração com a Geocoding API da Open-Meteo, lista de cidades, estados de carregamento, erro e sem resultados | Revisão do código e teste no navegador; conceitos: `fetch` com `async/await`, `try/catch`, estado da requisição, `map` com `key` e renderização condicional |
 
 Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na mensagem.
 
