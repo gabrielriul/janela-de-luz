@@ -3,6 +3,7 @@ import Card from './ui/Card.jsx'
 import ScoreBadge from './ScoreBadge.jsx'
 import EmptyState from './EmptyState.jsx'
 import { formatarJanela, formatarNomeDoDia } from '../utils/formatters.js'
+import { NOTA_BOA } from '../utils/nota.js'
 
 // Cards com as melhores janelas de gravação da semana.
 // onSelect: recebe a janela escolhida (para abrir o dia dela na tabela)
@@ -12,7 +13,7 @@ function BestWindows({ janelas, onSelect }) {
       <EmptyState
         icon={CalendarSearch}
         titulo="Nenhuma janela boa nos próximos 7 dias"
-        texto="Nenhuma sequência de horas chegou à nota 6. Tente outro modo de gravação ou outra cidade."
+        texto={`Nenhuma sequência de horas chegou à nota ${NOTA_BOA}. Tente outro modo de gravação ou outra cidade.`}
       />
     )
   }

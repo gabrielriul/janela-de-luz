@@ -71,7 +71,7 @@ Cada hora recebe uma nota de 0 a 10 (`src/utils/nota.js`):
 | Drone | Vento e rajadas. Voo à noite fica com 0. |
 | Golden hour | Céu aberto no nascer e no pôr do sol. Fora dessas horas a nota máxima é 4. |
 
-As **melhores janelas** são sequências de horas seguidas com nota 6 ou mais, ordenadas pela nota média (`src/utils/avaliacao.js`). Horas que já passaram não entram.
+As **melhores janelas** são sequências de horas seguidas com nota 6 ou mais (a constante `NOTA_BOA`, em `src/utils/nota.js`), ordenadas pela nota média (`src/utils/avaliacao.js`). Horas que já passaram não entram.
 
 ### Onde está o `useMemo`
 

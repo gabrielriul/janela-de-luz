@@ -1,9 +1,8 @@
 // Junta os dados da previsão com a luz e a nota de cada hora,
 // e encontra as melhores janelas de gravação da semana.
 import { calcularJanelasDeLuz, classificarLuz } from './luz.js'
-import { calcularNota } from './nota.js'
+import { calcularNota, NOTA_BOA } from './nota.js'
 
-const NOTA_MINIMA_DA_JANELA = 6 // a partir de "Boa"
 const QUANTIDADE_DE_JANELAS = 3
 
 // Para cada dia: calcula as janelas de luz e, para cada hora, a luz e a nota.
@@ -29,7 +28,7 @@ function inicioDaHora(horarioIso) {
   return `${horarioIso.slice(0, 13)}:00`
 }
 
-// Procura sequências de horas seguidas com nota boa e devolve as melhores da semana.
+// Procura sequências de horas seguidas com nota boa (NOTA_BOA ou mais) e devolve as melhores da semana.
 // agora: horário atual da cidade; horas que já passaram não entram.
 export function encontrarMelhoresJanelas(diasAvaliados, agora) {
   const horaAtual = agora ? inicioDaHora(agora) : ''
@@ -58,7 +57,7 @@ export function encontrarMelhoresJanelas(diasAvaliados, agora) {
     dia.horas.forEach((hora) => {
       // Comparar textos ISO funciona como comparar datas ("2026-09-27T09:00" < "2026-09-27T14:00")
       const jaPassou = hora.horario < horaAtual
-      if (!jaPassou && hora.nota >= NOTA_MINIMA_DA_JANELA) {
+      if (!jaPassou && hora.nota >= NOTA_BOA) {
         sequencia.push(hora)
       } else {
         fecharSequencia()
