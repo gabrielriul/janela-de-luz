@@ -2,11 +2,18 @@
 
 [![CI/CD](https://github.com/gabrielriul/janela-de-luz/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/gabrielriul/janela-de-luz/actions/workflows/ci-cd.yml)
 
+> **Repositório acadêmico** criado como Projeto 1 da disciplina **ES47B – Programação Web Fullstack – ES71 (2026_02)**, do curso de Engenharia da Computação da Universidade Tecnológica Federal do Paraná (UTFPR), câmpus Cornélio Procópio.
+>
+> **Professora:** Profª. Drª. Juliana Costa Silva\
+> **Aluno:** Gabriel Riul Perissé — RA 2064430
+
 **App publicado:** https://gabrielriul.github.io/janela-de-luz/
+
+## Sobre o projeto
 
 Planejador de gravações externas. O usuário busca uma cidade, vê a previsão do tempo hora a hora para os próximos 7 dias e o app calcula uma **nota de gravação** para cada horário, considerando nuvens, chuva, vento e golden hour. As melhores janelas para gravar ficam em destaque.
 
-Projeto 1 da disciplina **Programação Web Fullstack (AS64A)** — UTFPR Cornélio Procópio, 2026/2.
+O app é uma SPA (Single Page Application) feita em React que consome dados de uma API JSON pública, conforme pedido no enunciado do Projeto 1.
 
 ## Escolhas do projeto
 
@@ -71,7 +78,10 @@ Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na men
 
 ## Autor
 
-Gabriel Riul — Engenharia da Computação, UTFPR-CP
+**Gabriel Riul Perissé** — RA 2064430\
+Engenharia da Computação — UTFPR, câmpus Cornélio Procópio
+
+Disciplina ES47B – Programação Web Fullstack – ES71 (2026_02), com a Profª. Drª. Juliana Costa Silva.
 
 ## Créditos
 

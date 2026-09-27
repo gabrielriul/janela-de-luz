@@ -9,7 +9,7 @@ function Footer() {
         </a>{' '}
         (CC BY 4.0)
       </span>
-      <span>Projeto 1 · Programação Web Fullstack (AS64A) · UTFPR-CP</span>
+      <span>Projeto 1 · ES47B – Programação Web Fullstack · UTFPR-CP</span>
     </footer>
   )
 }
