@@ -1,33 +1,22 @@
-// Cabeçalho com a marca do app e uma frase explicando o que ele faz
+// Barra superior com a marca do app
 function Header() {
   return (
-    <header className="header">
-      <div className="marca">
+    <header className="app-header">
+      <div className="app-header__inner">
         <Logo />
-        <h1>Janela de Luz</h1>
+        <span className="wordmark">Janela de Luz</span>
       </div>
-      <p className="header-texto">
-        Nuvens, chuva, vento e a luz do sol, hora a hora. Descubra a melhor
-        janela para a sua próxima gravação externa.
-      </p>
     </header>
   )
 }
 
-// Logo desenhado em SVG: um sol nascendo sobre o horizonte
+// Marca em uma cor só (herda a cor do texto): um sol nascendo sobre o horizonte
 function Logo() {
   return (
-    <svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true">
-      <defs>
-        <linearGradient id="logo-sol" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ffd27a" />
-          <stop offset="1" stopColor="#f08a3c" />
-        </linearGradient>
-      </defs>
-      <rect width="64" height="64" rx="14" fill="#1e222c" />
-      <path d="M14 40a18 18 0 0 1 36 0z" fill="url(#logo-sol)" />
-      <rect x="8" y="42" width="48" height="4" rx="2" fill="#6d8cff" />
-      <rect x="16" y="50" width="32" height="3" rx="1.5" fill="#6d8cff" opacity=".5" />
+    <svg width="28" height="28" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+      <path d="M16 38a16 16 0 0 1 32 0z" />
+      <rect x="10" y="42" width="44" height="4" rx="2" />
+      <rect x="18" y="50" width="28" height="4" rx="2" />
     </svg>
   )
 }

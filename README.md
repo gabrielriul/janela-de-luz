@@ -23,6 +23,7 @@ O app é uma SPA (Single Page Application) feita em React que consome dados de u
 | Hook do React | `useMemo` — recalcula as notas de gravação só quando a previsão ou o modo de gravação mudam |
 | Biblioteca externa | [Recharts](https://recharts.org/) — gráfico hora a hora |
 | Stack | React 19 + Vite, JavaScript, CSS |
+| Interface | Design system próprio (tema claro, fonte Bricolage Grotesque, controles em formato de pílula) e ícones [Lucide](https://lucide.dev/) (`lucide-react`) |
 
 ## Funcionalidades
 
@@ -57,6 +58,7 @@ O workflow [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) roda no 
 .github/workflows/ci-cd.yml   # pipeline de CI/CD
 src/
 ├── components/   # componentes da interface (Header, SearchBar, EmptyState, Footer...)
+│   └── ui/       # componentes base do design system (Button, Card, Badge, TextInput, Spinner, Shimmer)
 ├── App.jsx       # componente principal: layout e estado da página
 ├── App.css       # estilos dos componentes
 ├── index.css     # estilos globais e variáveis de cor
@@ -73,6 +75,7 @@ Conforme pedido no enunciado, registro aqui como usei IA generativa no desenvolv
 | Etapa 0 — criação do projeto | Claude | Execução do `create-vite` (template React) e primeiro commit | Instalei o Node.js e as dependências e criei o repositório no GitHub |
 | Etapa 1 — layout base | Claude | Geração da estrutura inicial dos componentes e do CSS | Revisão do código; conceitos: componentes, props, estado com `useState`, componente controlado e renderização condicional |
 | Versionamento e CI/CD | Claude | Commits no repositório e criação do workflow de CI/CD (GitHub Actions + GitHub Pages) | Ativação do GitHub Pages nas configurações do repositório; conceitos: integração contínua, deploy contínuo e build com Vite |
+| Design system | Claude | Aplicação do meu design system (cores, tipografia, espaçamento, raios) e criação dos componentes base em `components/ui` | Revisão do código; conceitos: variáveis CSS, componentes reutilizáveis com props e variantes, prop `children` |
 
 Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na mensagem.
 

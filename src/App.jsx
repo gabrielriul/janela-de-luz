@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { MapPin, Search } from 'lucide-react'
 import Header from './components/Header.jsx'
 import SearchBar from './components/SearchBar.jsx'
 import EmptyState from './components/EmptyState.jsx'
@@ -14,18 +15,28 @@ function App() {
     <div className="app">
       <Header />
 
-      <main className="conteudo">
+      <main className="page">
+        <section className="page-intro">
+          <h1 className="heading-1">Encontre a melhor hora para gravar</h1>
+          <p className="text-muted">
+            Busque uma cidade e veja, hora a hora, como vão estar as nuvens, a chuva, o vento e a luz
+            do sol nos próximos 7 dias.
+          </p>
+        </section>
+
         <SearchBar onSearch={setTermoBusca} />
 
         {/* Renderização condicional: a mensagem muda conforme o estado */}
         {termoBusca ? (
           <EmptyState
-            titulo={`Você buscou por "${termoBusca}"`}
-            texto="Em breve aqui aparecem as cidades encontradas e a previsão hora a hora."
+            icon={Search}
+            titulo={`Busca por "${termoBusca}"`}
+            texto="As cidades encontradas vão aparecer aqui."
           />
         ) : (
           <EmptyState
-            titulo="Para onde vai a gravação?"
+            icon={MapPin}
+            titulo="Nenhuma cidade selecionada"
             texto="Busque uma cidade para ver as melhores horas para gravar nos próximos 7 dias."
           />
         )}

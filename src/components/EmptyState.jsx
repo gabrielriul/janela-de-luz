@@ -1,11 +1,20 @@
-// Mensagem exibida quando ainda não há nada para mostrar.
-// Recebe o título e o texto por props, então pode ser reaproveitado em várias situações.
-function EmptyState({ titulo, texto }) {
+import Card from './ui/Card.jsx'
+
+// Mensagem exibida quando não há conteúdo para mostrar (estado inicial, sem resultados, erro).
+// icon: componente de ícone do lucide-react
+// children: ação opcional, como um botão de "Tentar novamente"
+function EmptyState({ icon: Icon, titulo, texto, children }) {
   return (
-    <section className="estado-vazio">
-      <h2>{titulo}</h2>
-      <p>{texto}</p>
-    </section>
+    <Card gutter="lg" className="empty-state animate-fade-in">
+      {Icon && (
+        <span className="empty-state__icon">
+          <Icon size={16} aria-hidden="true" />
+        </span>
+      )}
+      <h2 className="heading-2">{titulo}</h2>
+      <p className="text-muted">{texto}</p>
+      {children}
+    </Card>
   )
 }
 

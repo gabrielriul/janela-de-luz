@@ -1,136 +1,115 @@
-/* ---------- Layout geral ---------- */
+/* ---------- Estrutura da página ---------- */
 .app {
-  max-width: 1080px;
   min-height: 100vh;
-  margin: 0 auto;
-  padding: 32px 20px 40px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-}
-
-.conteudo {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 
 /* ---------- Header ---------- */
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.app-header {
+  border-bottom: 1px solid var(--neutral-200);
 }
 
-.marca {
+.app-header__inner {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-2);
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-6);
 }
 
-.marca h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.wordmark {
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+  font-weight: 600;
 }
 
-.header-texto {
-  max-width: 620px;
-  color: var(--text-muted);
-  font-size: 1.05rem;
+/* ---------- Conteúdo ---------- */
+.page {
+  flex: 1;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.page-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 640px;
 }
 
 /* ---------- Busca ---------- */
-.busca {
+.search {
   display: flex;
-  gap: 10px;
-  padding: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  align-items: flex-end;
+  gap: var(--space-2);
 }
 
-.busca input {
+.search .field {
   flex: 1;
-  min-width: 0;
-  padding: 12px 14px;
-  background: var(--surface-2);
-  border: 1px solid transparent;
-  border-radius: 10px;
-}
-
-.busca input::placeholder {
-  color: var(--text-muted);
-}
-
-.busca input:focus {
-  border-color: var(--gold);
-  outline: none;
-}
-
-.botao {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  background: var(--gold);
-  color: #1b1406;
-  font-weight: 600;
-  cursor: pointer;
-  transition: filter 0.15s;
-}
-
-.botao:hover {
-  filter: brightness(1.08);
-}
-
-.botao:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /* ---------- Estado vazio ---------- */
-.estado-vazio {
-  display: flex;
-  flex-direction: column;
+.empty-state {
   align-items: center;
-  gap: 10px;
-  padding: 56px 24px;
   text-align: center;
-  background: var(--surface);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
+  gap: var(--space-2);
 }
 
-.estado-vazio h2 {
-  font-size: 1.15rem;
-  font-weight: 600;
-}
-
-.estado-vazio p {
+.empty-state p {
   max-width: 460px;
-  color: var(--text-muted);
+}
+
+.empty-state__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--green-100);
+  color: var(--neutral-600);
+}
+
+.empty-state .btn {
+  margin-top: var(--space-2);
 }
 
 /* ---------- Footer ---------- */
-.footer {
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
+.app-footer {
+  border-top: 1px solid var(--neutral-200);
+}
+
+.app-footer__inner {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 8px;
-  color: var(--text-muted);
-  font-size: 0.85rem;
+  gap: var(--space-2);
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-6);
 }
 
 /* ---------- Telas pequenas ---------- */
-@media (max-width: 560px) {
-  .app {
-    padding: 24px 16px 32px;
+@media (max-width: 767px) {
+  .app-header__inner,
+  .app-footer__inner {
+    padding-inline: var(--space-4);
   }
 
-  .busca {
+  .page {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .search {
     flex-direction: column;
+    align-items: stretch;
   }
 }
