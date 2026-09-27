@@ -15,6 +15,27 @@ Planejador de gravações externas. O usuário busca uma cidade, vê a previsão
 
 O app é uma SPA (Single Page Application) feita em React que consome dados de uma API JSON pública, conforme pedido no enunciado do Projeto 1.
 
+### Como usar
+
+1. Busque a cidade da gravação e escolha uma das cidades encontradas.
+2. Escolha o modo de gravação: **Externa**, **Drone** ou **Golden hour**.
+3. Veja as **melhores janelas** da semana e clique em uma para abrir o dia dela.
+4. Confira o resumo do dia, o gráfico da nota e a tabela hora a hora. Passe o mouse na nota para ver o motivo.
+5. Salve a cidade em **Locações salvas** para abrir a previsão com um clique na próxima vez.
+
+## Requisitos do Projeto 1
+
+| Requisito do enunciado | Como foi atendido | Onde está |
+| --- | --- | --- |
+| Front-end com React.js e AJAX | Requisições com `fetch` e `async/await` | `src/services/openMeteo.js` |
+| SPA, sem redirecionamentos | Uma única página; a tela muda por estado e renderização condicional | `src/App.jsx` |
+| Uma API JSON aberta | Open-Meteo (Geocoding e Forecast) | `src/services/openMeteo.js` |
+| Um hook/recurso do React da lista | `useMemo` (e também `useRef` e `lazy`) | `src/components/Forecast.jsx` |
+| Uma biblioteca externa compatível com React | Recharts | `src/components/ScoreChart.jsx` |
+| Aplicação integrada, não CRUDs isolados | Busca → previsão → nota → melhores janelas → gráfico → favoritos, tudo ligado | todo o `src/` |
+| Repositório público com evolução por commits | Commits por etapa, fluxo `develop` → PR → `main` | [histórico de commits](https://github.com/gabrielriul/janela-de-luz/commits/main) |
+| Registro das ferramentas, inclusive IA | Tabela de uso de IA | seção [Uso de IA](#uso-de-ia) |
+
 ## Escolhas do projeto
 
 | Item | Escolha |
@@ -62,6 +83,28 @@ Em `src/components/ScoreChart.jsx`: um gráfico de colunas com a nota de cada ho
 
 O gráfico é carregado com `lazy` e `Suspense` (`src/components/Forecast.jsx`): o código do Recharts só é baixado quando o gráfico aparece, o que deixou o arquivo JavaScript inicial com cerca de 250 kB em vez de 620 kB.
 
+## Arquitetura
+
+```mermaid
+flowchart TD
+    U(["Usuário"]) -->|digita a cidade| SB["SearchBar"]
+    SB -->|onSearch| APP["App: busca, cidade escolhida e favoritos"]
+    APP -->|buscarCidades| GEO[("Geocoding API da Open-Meteo")]
+    APP -->|cidade escolhida| FC["Forecast"]
+    FC -->|usePrevisao + buscarPrevisao| FOR[("Forecast API da Open-Meteo")]
+    FC -->|useMemo + avaliarDias| NOTAS["168 notas da semana: utils/nota.js e utils/luz.js"]
+    NOTAS --> BW["BestWindows: melhores janelas"]
+    NOTAS --> DSEL["DaySelector: dias"]
+    NOTAS --> CH["ScoreChart: Recharts, carregado com lazy"]
+    NOTAS --> HT["HourlyTable: tabela hora a hora"]
+    APP <-->|useFavoritos + useArmazenamentoLocal| LS[("localStorage do navegador")]
+```
+
+- **Componentes** (`src/components`) só cuidam da tela. Os de `ui/` são as peças do design system.
+- **Serviços** (`src/services`) fazem as requisições e traduzem os campos da API para o formato do app.
+- **Hooks** (`src/hooks`) guardam a lógica com estado: buscar a previsão e salvar dados no navegador.
+- **Utils** (`src/utils`) são funções puras: recebem dados e devolvem resultados, sem mexer na tela. Por isso dá para testar a nota sem abrir o navegador.
+
 ## Como rodar
 
 Pré-requisito: Node.js 20.19+ ou 22.12+.
@@ -72,6 +115,13 @@ npm run dev
 ```
 
 Depois é só abrir o endereço que aparecer no terminal (normalmente http://localhost:5173).
+
+| Comando | O que faz |
+| --- | --- |
+| `npm run dev` | Servidor de desenvolvimento com recarga automática |
+| `npm run build` | Build de produção na pasta `dist/` |
+| `npm run preview` | Serve o build de produção localmente |
+| `npm run lint` | Verifica o código com o oxlint |
 
 ## Fluxo de trabalho
 
@@ -107,7 +157,7 @@ Os commits seguem o padrão [Conventional Commits](https://www.conventionalcommi
 └── pull_request_template.md
 src/
 ├── components/   # componentes da interface (Header, SearchBar, EmptyState, Footer...)
-│   └── ui/       # componentes base do design system (Button, Card, Badge, TextInput, Spinner, Shimmer)
+│   └── ui/       # componentes base do design system (Button, Card, Badge, Chip, TextInput, Shimmer)
 ├── hooks/        # hooks personalizados (usePrevisao, useFavoritos, useArmazenamentoLocal)
 ├── services/     # comunicação com a API (openMeteo.js)
 ├── utils/        # funções puras: nota de gravação, melhores janelas, luz, clima e formatação pt-BR
@@ -134,6 +184,7 @@ Conforme pedido no enunciado, registro aqui como usei IA generativa no desenvolv
 | Etapa 4 — nota de gravação | Claude | Regras da nota por modo, melhores janelas da semana, `useMemo` no `Forecast`, seleção de modo e destaque da janela na tabela | Revisão do código e teste no navegador; conceitos: `useMemo` e dependências, `useRef` para rolar até a tabela, funções puras e objeto de configuração por modo |
 | Etapa 5 — gráfico | Claude | Gráfico de colunas com Recharts seguindo o design system, dica ao passar o mouse e carregamento sob demanda com `lazy` | Revisão do código e teste no navegador; conceitos: componentes do Recharts (`BarChart`, `Bar`, `Cell`, `ReferenceArea`, `Tooltip`), `lazy` e `Suspense`, divisão do código em partes (code splitting) |
 | Etapa 6 — favoritos e acabamento | Claude | Locações salvas com `localStorage`, modo lembrado entre visitas, título da aba com a cidade, respeito à preferência de menos movimento e metadados de compartilhamento | Revisão do código e teste no navegador; conceitos: `localStorage` e JSON, inicialização preguiçosa do `useState`, hook personalizado reaproveitável, `useEffect` para mexer no DOM (`document.title`), acessibilidade com `prefers-reduced-motion` |
+| Etapa 7 — revisão e documentação | Claude | Revisão do código (remoção de partes sem uso), README final com requisitos, arquitetura e como usar, e material de estudo para a defesa | Estudo do código de cada etapa para a apresentação e a defesa |
 
 Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na mensagem.
 
