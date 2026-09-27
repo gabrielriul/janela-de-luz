@@ -11,6 +11,7 @@ import Button from './ui/Button.jsx'
 import Card from './ui/Card.jsx'
 import Shimmer from './ui/Shimmer.jsx'
 import { usePrevisao } from '../hooks/usePrevisao.js'
+import { useArmazenamentoLocal } from '../hooks/useArmazenamentoLocal.js'
 import { MODOS } from '../utils/nota.js'
 import { avaliarDias, encontrarMelhoresJanelas } from '../utils/avaliacao.js'
 import { formatarDiaLongo } from '../utils/formatters.js'
@@ -22,7 +23,9 @@ const ScoreChart = lazy(() => import('./ScoreChart.jsx'))
 // Previsão da cidade escolhida: modo de gravação, melhores janelas e tabela hora a hora
 function Forecast({ cidade }) {
   const { dias, agora, status, recarregar } = usePrevisao(cidade)
-  const [chaveModo, setChaveModo] = useState('externa')
+  // O modo escolhido fica salvo no navegador e volta na próxima visita
+  const [modoSalvo, setChaveModo] = useArmazenamentoLocal('janela-de-luz:modo', 'externa')
+  const chaveModo = MODOS[modoSalvo] ? modoSalvo : 'externa' // ignora um valor salvo inválido
   const [indiceDia, setIndiceDia] = useState(0)
   const [destaque, setDestaque] = useState(null) // janela escolhida nos cards
   const refTabela = useRef(null) // referência à seção da tabela, para rolar a tela até ela
@@ -52,7 +55,9 @@ function Forecast({ cidade }) {
   function handleWindowSelect(janela) {
     setIndiceDia(janela.indiceDia)
     setDestaque(janela)
-    refTabela.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // Rolagem suave, a não ser que a pessoa prefira menos movimento na tela
+    const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    refTabela.current?.scrollIntoView({ behavior: menosMovimento ? 'auto' : 'smooth', block: 'start' })
   }
 
   if (status === 'carregando') {

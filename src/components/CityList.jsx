@@ -1,10 +1,11 @@
-import { MapPin } from 'lucide-react'
+import { MapPin, Star } from 'lucide-react'
 import Card from './ui/Card.jsx'
 import { formatarCoordenadas, formatarRegiao } from '../utils/formatters.js'
 
 // Lista das cidades encontradas na busca. Cada cidade é um card clicável.
 // onSelect: função chamada com a cidade escolhida
-function CityList({ cidades, onSelect }) {
+// ehFavorita: função que diz se a cidade está nas locações salvas
+function CityList({ cidades, onSelect, ehFavorita }) {
   return (
     <section className="section animate-fade-in" aria-labelledby="titulo-cidades">
       <div className="section-heading">
@@ -23,6 +24,9 @@ function CityList({ cidades, onSelect }) {
                 <span className="city-card__name">
                   <MapPin size={16} aria-hidden="true" />
                   {cidade.nome}
+                  {ehFavorita(cidade) && (
+                    <Star size={14} fill="currentColor" aria-label="Locação salva" role="img" />
+                  )}
                 </span>
                 <span className="body-sm text-muted">{formatarRegiao(cidade)}</span>
                 <span className="caption text-muted">

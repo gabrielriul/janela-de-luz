@@ -32,7 +32,7 @@ O app é uma SPA (Single Page Application) feita em React que consome dados de u
 - [x] Previsão hora a hora na Forecast API (7 dias, nascer e pôr do sol, golden hour e blue hour)
 - [x] Nota de gravação por hora com `useMemo`, modos de gravação (externa, drone e golden hour) e melhores janelas da semana
 - [x] Gráfico hora a hora com Recharts (nota de cada hora, faixas de golden e blue hour, dica ao passar o mouse)
-- [ ] Locações favoritas salvas no navegador
+- [x] Locações favoritas salvas no navegador (`localStorage`), com o último modo de gravação lembrado entre visitas
 
 ## Como a nota de gravação funciona
 
@@ -108,7 +108,7 @@ Os commits seguem o padrão [Conventional Commits](https://www.conventionalcommi
 src/
 ├── components/   # componentes da interface (Header, SearchBar, EmptyState, Footer...)
 │   └── ui/       # componentes base do design system (Button, Card, Badge, TextInput, Spinner, Shimmer)
-├── hooks/        # hooks personalizados (usePrevisao.js)
+├── hooks/        # hooks personalizados (usePrevisao, useFavoritos, useArmazenamentoLocal)
 ├── services/     # comunicação com a API (openMeteo.js)
 ├── utils/        # funções puras: nota de gravação, melhores janelas, luz, clima e formatação pt-BR
 ├── App.jsx       # componente principal: layout e estado da página
@@ -133,6 +133,7 @@ Conforme pedido no enunciado, registro aqui como usei IA generativa no desenvolv
 | Etapa 3 — previsão hora a hora | Claude | Integração com a Forecast API, hook `usePrevisao`, seleção de dia, resumo do dia, cálculo de golden/blue hour e tabela hora a hora | Revisão do código e teste no navegador; conceitos: `useEffect` com função de limpeza, hook personalizado, estado derivado, `key` para reiniciar um componente |
 | Etapa 4 — nota de gravação | Claude | Regras da nota por modo, melhores janelas da semana, `useMemo` no `Forecast`, seleção de modo e destaque da janela na tabela | Revisão do código e teste no navegador; conceitos: `useMemo` e dependências, `useRef` para rolar até a tabela, funções puras e objeto de configuração por modo |
 | Etapa 5 — gráfico | Claude | Gráfico de colunas com Recharts seguindo o design system, dica ao passar o mouse e carregamento sob demanda com `lazy` | Revisão do código e teste no navegador; conceitos: componentes do Recharts (`BarChart`, `Bar`, `Cell`, `ReferenceArea`, `Tooltip`), `lazy` e `Suspense`, divisão do código em partes (code splitting) |
+| Etapa 6 — favoritos e acabamento | Claude | Locações salvas com `localStorage`, modo lembrado entre visitas, título da aba com a cidade, respeito à preferência de menos movimento e metadados de compartilhamento | Revisão do código e teste no navegador; conceitos: `localStorage` e JSON, inicialização preguiçosa do `useState`, hook personalizado reaproveitável, `useEffect` para mexer no DOM (`document.title`), acessibilidade com `prefers-reduced-motion` |
 
 Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na mensagem.
 

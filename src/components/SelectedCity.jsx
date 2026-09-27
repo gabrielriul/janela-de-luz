@@ -1,4 +1,4 @@
-import { Clock, MapPin, Mountain } from 'lucide-react'
+import { Clock, MapPin, Mountain, Star } from 'lucide-react'
 import Card from './ui/Card.jsx'
 import Badge from './ui/Badge.jsx'
 import Button from './ui/Button.jsx'
@@ -6,7 +6,8 @@ import { formatarCoordenadas, formatarInteiro, formatarRegiao } from '../utils/f
 
 // Resumo da cidade escolhida: nome, região, coordenadas, altitude e fuso horário
 // onChange: volta para a lista de cidades
-function SelectedCity({ cidade, onChange }) {
+// ehFavorita / onToggleFavorito: salvar ou remover a cidade das locações salvas
+function SelectedCity({ cidade, onChange, ehFavorita, onToggleFavorito }) {
   return (
     <Card gutter="lg" className="animate-fade-in">
       <div className="selected-city__header">
@@ -15,9 +16,19 @@ function SelectedCity({ cidade, onChange }) {
           <h2 className="heading-2">{cidade.nome}</h2>
           <span className="body-sm text-muted">{formatarRegiao(cidade)}</span>
         </div>
-        <Button variant="outline" onClick={onChange}>
-          Trocar cidade
-        </Button>
+        <div className="selected-city__acoes">
+          <Button
+            variant={ehFavorita ? 'secondary' : 'outline'}
+            onClick={onToggleFavorito}
+            aria-pressed={ehFavorita}
+          >
+            <Star size={16} fill={ehFavorita ? 'currentColor' : 'none'} aria-hidden="true" />
+            {ehFavorita ? 'Locação salva' : 'Salvar locação'}
+          </Button>
+          <Button variant="outline" onClick={onChange}>
+            Trocar cidade
+          </Button>
+        </div>
       </div>
 
       <div className="badge-row">
