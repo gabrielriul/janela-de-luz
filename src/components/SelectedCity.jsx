@@ -1,57 +1,50 @@
-import { Clock, MapPin, Mountain, Star } from 'lucide-react'
+import { Star } from 'lucide-react'
 import Card from './ui/Card.jsx'
-import Badge from './ui/Badge.jsx'
 import Button from './ui/Button.jsx'
+import DataList from './ui/DataList.jsx'
+import { FlexBetweenLayout } from './ui/Layout.jsx'
 import { formatarCoordenadas, formatarInteiro, formatarRegiao } from '../utils/formatters.js'
 
-// Resumo da cidade escolhida: nome, região, coordenadas, altitude e fuso horário
-// onChange: volta para a lista de cidades
+// Resumo da cidade escolhida: nome, região e os detalhes (coordenadas, altitude e fuso horário)
+// onChange: volta para a busca
 // ehFavorita / onToggleFavorito: salvar ou remover a cidade das locações salvas
 function SelectedCity({ cidade, onChange, ehFavorita, onToggleFavorito }) {
   return (
-    <Card gutter="lg" className="animate-fade-in">
-      <div className="selected-city__header">
-        <div className="selected-city__title">
-          <span className="caption text-muted">Cidade selecionada</span>
+    <Card gutter="lg" className="selected-city animate-fade-in">
+      <FlexBetweenLayout>
+        <div className="selected-city__titulo">
+          <p className="caption text-secondary">Cidade selecionada</p>
           <h2 className="heading-2">{cidade.nome}</h2>
-          <span className="body-sm text-muted">{formatarRegiao(cidade)}</span>
+          <p className="body-sm text-secondary">{formatarRegiao(cidade)}</p>
         </div>
+
         <div className="selected-city__acoes">
           <Button
-            variant={ehFavorita ? 'secondary' : 'outline'}
+            variant={ehFavorita ? 'secondary' : 'secondary-neutral'}
+            compact
             onClick={onToggleFavorito}
             aria-pressed={ehFavorita}
           >
             <Star size={16} fill={ehFavorita ? 'currentColor' : 'none'} aria-hidden="true" />
             {ehFavorita ? 'Locação salva' : 'Salvar locação'}
           </Button>
-          <Button variant="outline" onClick={onChange}>
+          <Button variant="secondary-neutral" compact onClick={onChange}>
             Trocar cidade
           </Button>
         </div>
-      </div>
+      </FlexBetweenLayout>
 
-      <div className="badge-row">
-        <Badge tone="neutral">
-          <MapPin size={14} aria-hidden="true" />
-          {formatarCoordenadas(cidade.latitude, cidade.longitude)}
-        </Badge>
-
-        {/* Nem toda cidade tem altitude cadastrada; só mostra quando existir */}
-        {cidade.altitude != null && (
-          <Badge tone="neutral">
-            <Mountain size={14} aria-hidden="true" />
-            {formatarInteiro(cidade.altitude)} m de altitude
-          </Badge>
-        )}
-
-        {cidade.fusoHorario && (
-          <Badge tone="neutral">
-            <Clock size={14} aria-hidden="true" />
-            Fuso {cidade.fusoHorario}
-          </Badge>
-        )}
-      </div>
+      {/* Nem toda cidade tem altitude ou fuso cadastrados; itens sem valor não aparecem */}
+      <DataList
+        data={[
+          { title: 'Coordenadas', value: formatarCoordenadas(cidade.latitude, cidade.longitude) },
+          {
+            title: 'Altitude',
+            value: cidade.altitude != null ? `${formatarInteiro(cidade.altitude)} m` : null,
+          },
+          { title: 'Fuso horário', value: cidade.fusoHorario },
+        ]}
+      />
     </Card>
   )
 }

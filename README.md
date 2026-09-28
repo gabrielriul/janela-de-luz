@@ -20,8 +20,9 @@ O app é uma SPA (Single Page Application) feita em React que consome dados de u
 1. Busque a cidade da gravação e escolha uma das cidades encontradas.
 2. Escolha o modo de gravação: **Externa**, **Drone** ou **Golden hour**.
 3. Veja as **melhores janelas** da semana e clique em uma para abrir o dia dela.
-4. Confira o resumo do dia, o gráfico da nota e a tabela hora a hora. Passe o mouse na nota para ver o motivo.
+4. Confira o melhor horário do dia, o resumo, o gráfico da nota e a tabela hora a hora. Passe o mouse na nota para ver o motivo.
 5. Salve a cidade em **Locações salvas** para abrir a previsão com um clique na próxima vez.
+6. Use o botão de lua (ou sol) na barra do topo para trocar entre o tema claro e o escuro. Sem essa escolha, o app segue o tema do sistema.
 
 ## Requisitos do Projeto 1
 
@@ -44,7 +45,7 @@ O app é uma SPA (Single Page Application) feita em React que consome dados de u
 | Hook do React | `useMemo` — recalcula as notas de gravação só quando a previsão ou o modo de gravação mudam |
 | Biblioteca externa | [Recharts](https://recharts.org/) — gráfico hora a hora |
 | Stack | React 19 + Vite, JavaScript, CSS |
-| Interface | Design system próprio (tema claro, fonte Bricolage Grotesque, controles em formato de pílula) e ícones [Lucide](https://lucide.dev/) (`lucide-react`) |
+| Interface | Design system **Credit Guide × Apple** (estrutura de componentes do Credit Guide com a interface do iOS), temas claro e escuro e ícones [Lucide](https://lucide.dev/) (`lucide-react`). Detalhes em [Design system](#design-system) |
 
 ## Funcionalidades
 
@@ -54,6 +55,7 @@ O app é uma SPA (Single Page Application) feita em React que consome dados de u
 - [x] Nota de gravação por hora com `useMemo`, modos de gravação (externa, drone e golden hour) e melhores janelas da semana
 - [x] Gráfico hora a hora com Recharts (nota de cada hora, faixas de golden e blue hour, dica ao passar o mouse)
 - [x] Locações favoritas salvas no navegador (`localStorage`), com o último modo de gravação lembrado entre visitas
+- [x] Design system Credit Guide × Apple, com tema claro e escuro (segue o sistema ou a escolha feita no botão da barra)
 
 ## Como a nota de gravação funciona
 
@@ -79,9 +81,9 @@ Em `src/components/Forecast.jsx`. As 168 notas da semana (7 dias × 24 horas) e 
 
 ### Onde está o Recharts
 
-Em `src/components/ScoreChart.jsx`: um gráfico de colunas com a nota de cada hora do dia escolhido. As horas com nota 6 ou mais ficam em verde, a linha marca a nota 6 e o fundo destaca a golden hour e a blue hour. A tabela logo abaixo mostra os mesmos números.
+Em `src/components/ScoreChart.jsx`: um gráfico de colunas com a nota de cada hora do dia escolhido. As horas com nota 6 ou mais ficam na cor principal dos gráficos do design system (verde no tema claro, menta no escuro), a linha tracejada marca a nota 6 e o fundo destaca a golden hour e a blue hour. A tabela logo abaixo mostra os mesmos números.
 
-O gráfico é carregado com `lazy` e `Suspense` (`src/components/Forecast.jsx`): o código do Recharts só é baixado quando o gráfico aparece, o que deixou o arquivo JavaScript inicial com cerca de 250 kB em vez de 620 kB.
+O gráfico é carregado com `lazy` e `Suspense` (`src/components/Forecast.jsx`): o código do Recharts só é baixado quando o gráfico aparece, o que deixou o arquivo JavaScript inicial com cerca de 260 kB em vez de 630 kB.
 
 ## Arquitetura
 
@@ -98,12 +100,33 @@ flowchart TD
     NOTAS --> CH["ScoreChart: Recharts, carregado com lazy"]
     NOTAS --> HT["HourlyTable: tabela hora a hora"]
     APP <-->|useFavoritos + useArmazenamentoLocal| LS[("localStorage do navegador")]
+    APP -->|useTema| TEMA["Tema claro ou escuro: data-theme na tag html"]
 ```
 
 - **Componentes** (`src/components`) só cuidam da tela. Os de `ui/` são as peças do design system.
+- **Estilos** (`src/styles`) guardam os tokens do design system (cores dos dois temas, espaçamento, raios, sombras) e os estilos de texto.
 - **Serviços** (`src/services`) fazem as requisições e traduzem os campos da API para o formato do app.
-- **Hooks** (`src/hooks`) guardam a lógica com estado: buscar a previsão e salvar dados no navegador.
+- **Hooks** (`src/hooks`) guardam a lógica com estado: buscar a previsão, salvar dados no navegador, o tema e a rolagem da página.
 - **Utils** (`src/utils`) são funções puras: recebem dados e devolvem resultados, sem mexer na tela. Por isso dá para testar a nota sem abrir o navegador.
+
+## Design system
+
+A interface segue o design system **Credit Guide × Apple**: a estrutura dos componentes (nomes, props e variantes) vem do Credit Guide e o visual segue as diretrizes da Apple (fonte do sistema, cápsulas, listas agrupadas, vidro só no que flutua). O nome e o logo do Credit Guide não são usados; o Janela de Luz tem a própria marca.
+
+- **Três camadas:** a página em cinza-claro (`neutral-150`), o conteúdo em cards brancos sem borda (`neutral-100`, raio de 20px) e a barra do topo de vidro, que fica fixa enquanto a página rola por baixo.
+- **Tokens:** todas as cores e medidas são variáveis CSS em `src/styles/tokens.css`. O tema escuro troca só os valores, pelo atributo `data-theme` da tag `<html>`.
+- **Tema:** o hook `useTema` segue o tema do sistema (e acompanha a mudança com `useSyncExternalStore`) até a pessoa escolher um no botão da barra; a escolha fica salva no navegador. Um script pequeno no `index.html` aplica o tema antes da primeira pintura, para a tela não piscar.
+- **Texto:** fonte do sistema (San Francisco nos aparelhos Apple, Inter nos demais) e Bricolage Grotesque só no título da página. As duas fontes são servidas pelo próprio app (`src/assets/fonts`).
+- **Barra do topo:** ao rolar, ganha uma linha fina e, quando o título grande passa por baixo dela, o nome da cidade aparece no centro, como no iOS (hook `useRolagemDaPagina`).
+
+| Componente do design system | Arquivo | Onde aparece |
+| --- | --- | --- |
+| `Button`, `Badge`, `Chip`, `Card`, `TextInput` | `src/components/ui/` | Em toda a interface |
+| `SegmentedControl` | `ui/SegmentedControl.jsx` | Modo de gravação (3 opções; setas do teclado trocam a opção) |
+| `PageHeader`, `SectionTitle`, `ContentSection` | `ui/PageHeader.jsx`, `ui/ContentSection.jsx` | Título da página e seções (título, filtros, destaque, métricas e conteúdo) |
+| `List`, `DataList`, `Metric` | `ui/List.jsx`, `ui/DataList.jsx`, `ui/Metric.jsx` | Cidades encontradas, detalhes da cidade e resumo do dia |
+| `FeedbackPlaceholder`, `Shimmer` | `ui/FeedbackPlaceholder.jsx`, `ui/Shimmer.jsx` | Estados vazios, de erro e de carregamento |
+| `OverflowXContainer`, `ResponsiveGridList`, `FlexBetweenLayout`, `MainContentContainer` | `ui/OverflowXContainer.jsx`, `ui/Layout.jsx` | Fileira de dias, grade de janelas e estrutura da página |
 
 ## Como rodar
 
@@ -156,14 +179,15 @@ Os commits seguem o padrão [Conventional Commits](https://www.conventionalcommi
 ├── workflows/deploy.yml   # CD: deploy no GitHub Pages a cada merge na main
 └── pull_request_template.md
 src/
-├── components/   # componentes da interface (Header, SearchBar, EmptyState, Footer...)
-│   └── ui/       # componentes base do design system (Button, Card, Badge, Chip, TextInput, Shimmer)
-├── hooks/        # hooks personalizados (usePrevisao, useFavoritos, useArmazenamentoLocal)
+├── assets/fonts/ # fontes servidas pelo app (Inter e Bricolage Grotesque)
+├── components/   # componentes da interface (AppHeader, SearchBar, Forecast, ScoreChart, Footer...)
+│   └── ui/       # componentes do design system (Button, Card, SegmentedControl, ContentSection, List...) e ui.css
+├── hooks/        # hooks personalizados (usePrevisao, useFavoritos, useArmazenamentoLocal, useTema, useRolagemDaPagina)
 ├── services/     # comunicação com a API (openMeteo.js)
+├── styles/       # tokens do design system (temas claro e escuro) e estilos base de texto
 ├── utils/        # funções puras: nota de gravação, melhores janelas, luz, clima e formatação pt-BR
 ├── App.jsx       # componente principal: layout e estado da página
-├── App.css       # estilos dos componentes
-├── index.css     # estilos globais e variáveis de cor
+├── App.css       # estilos específicos das telas do app
 └── main.jsx      # ponto de entrada do React
 ```
 
@@ -185,6 +209,7 @@ Conforme pedido no enunciado, registro aqui como usei IA generativa no desenvolv
 | Etapa 5 — gráfico | Claude | Gráfico de colunas com Recharts seguindo o design system, dica ao passar o mouse e carregamento sob demanda com `lazy` | Revisão do código e teste no navegador; conceitos: componentes do Recharts (`BarChart`, `Bar`, `Cell`, `ReferenceArea`, `Tooltip`), `lazy` e `Suspense`, divisão do código em partes (code splitting) |
 | Etapa 6 — favoritos e acabamento | Claude | Locações salvas com `localStorage`, modo lembrado entre visitas, título da aba com a cidade, respeito à preferência de menos movimento e metadados de compartilhamento | Revisão do código e teste no navegador; conceitos: `localStorage` e JSON, inicialização preguiçosa do `useState`, hook personalizado reaproveitável, `useEffect` para mexer no DOM (`document.title`), acessibilidade com `prefers-reduced-motion` |
 | Etapa 7 — revisão e documentação | Claude | Revisão do código (remoção de partes sem uso), README final com requisitos, arquitetura e como usar, e material de estudo para a defesa | Estudo do código de cada etapa para a apresentação e a defesa |
+| Revisão do design system | Claude | Reaplicação do design system reformulado (Credit Guide × Apple): tokens dos temas claro e escuro, fontes servidas pelo app, componentes novos (`SegmentedControl`, `ContentSection`, `PageHeader`, `List`, `DataList`, `FeedbackPlaceholder`, `OverflowXContainer`), barra de vidro que recebe o título ao rolar e tema do gráfico | Revisão do código e teste no navegador nos dois temas, no computador e no celular; conceitos: variáveis CSS por tema com `data-theme`, `useSyncExternalStore`, `useId`, `ref` como prop no React 19 e acessibilidade do controle segmentado (setas do teclado e `aria-checked`) |
 
 Os commits feitos com ajuda da IA trazem a linha `Co-Authored-By: Claude` na mensagem.
 

@@ -1,8 +1,8 @@
 // Rodapé com o crédito da API (exigido pela licença da Open-Meteo) e a identificação do projeto
 function Footer() {
   return (
-    <footer className="app-footer">
-      <div className="app-footer__inner caption text-muted">
+    <footer className="app-footer content-gutter">
+      <div className="app-footer__inner caption text-secondary">
         <span>
           Dados meteorológicos:{' '}
           <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">

@@ -1,7 +1,8 @@
 import { CalendarSearch } from 'lucide-react'
 import Card from './ui/Card.jsx'
+import FeedbackPlaceholder from './ui/FeedbackPlaceholder.jsx'
+import { ResponsiveGridList } from './ui/Layout.jsx'
 import ScoreBadge from './ScoreBadge.jsx'
-import EmptyState from './EmptyState.jsx'
 import { formatarJanela, formatarNomeDoDia } from '../utils/formatters.js'
 import { NOTA_BOA } from '../utils/nota.js'
 
@@ -10,35 +11,37 @@ import { NOTA_BOA } from '../utils/nota.js'
 function BestWindows({ janelas, onSelect }) {
   if (janelas.length === 0) {
     return (
-      <EmptyState
+      <FeedbackPlaceholder
         icon={CalendarSearch}
-        titulo="Nenhuma janela boa nos próximos 7 dias"
-        texto={`Nenhuma sequência de horas chegou à nota ${NOTA_BOA}. Tente outro modo de gravação ou outra cidade.`}
+        title="Nenhuma janela boa nos próximos 7 dias"
+        titleAs="h3"
+        description={`Nenhuma sequência de horas chegou à nota ${NOTA_BOA}. Tente outro modo de gravação ou outra cidade.`}
       />
     )
   }
 
   return (
-    <ul className="window-grid">
+    <ResponsiveGridList cols={{ mobile: 1, tablet: 3 }}>
       {janelas.map((janela, posicao) => (
         <li key={`${janela.data}-${janela.inicio}`}>
-          <Card as="button" clickable onClick={() => onSelect(janela)}>
-            <div className="window-card">
-              <div className="window-card__topo">
-                <span className="caption text-muted">{posicao + 1}ª melhor janela</span>
-                <ScoreBadge nota={janela.notaMedia} mostrarRotulo />
-              </div>
-              <span className="heading-2">{formatarNomeDoDia(janela.data, janela.indiceDia)}</span>
-              <span>{formatarJanela(janela.inicio, janela.fim)}</span>
-              <span className="caption text-muted">
+          {/* Card clicável: abre o dia da janela na tabela, com as horas destacadas */}
+          <Card as="button" clickable className="window-card" onClick={() => onSelect(janela)}>
+            <span className="window-card__topo">
+              <span className="caption text-secondary">{posicao + 1}ª melhor janela</span>
+              <ScoreBadge nota={janela.notaMedia} mostrarRotulo />
+            </span>
+            <span className="window-card__corpo">
+              <span className="headline">{formatarNomeDoDia(janela.data, janela.indiceDia)}</span>
+              <span className="tabular">{formatarJanela(janela.inicio, janela.fim)}</span>
+              <span className="caption text-secondary">
                 {janela.quantidadeDeHoras} {janela.quantidadeDeHoras === 1 ? 'hora' : 'horas'}
                 {janela.temGoldenHour && ' · inclui golden hour'}
               </span>
-            </div>
+            </span>
           </Card>
         </li>
       ))}
-    </ul>
+    </ResponsiveGridList>
   )
 }
 

@@ -1,0 +1,166 @@
+/*
+  Tokens do design system (Credit Guide × Apple), em variáveis CSS.
+  Os valores vêm do tokens.json do design system. Os componentes nunca usam cores ou medidas
+  soltas: sempre var(--token). Assim, trocar de tema é só trocar os valores daqui.
+
+  Temas: o claro fica em :root e o escuro em [data-theme='dark'].
+  Quem define o data-theme na tag <html> é o script do index.html (antes da primeira pintura)
+  e o hook useTema (quando a pessoa troca o tema ou o sistema muda).
+*/
+
+/* Fontes: Inter é a alternativa ao San Francisco fora dos aparelhos Apple;
+   Bricolage Grotesque é a fonte da marca, usada só no título da página (heading-1). */
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter-Variable-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('../assets/fonts/BricolageGrotesque-Variable-latin.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  /* ---------- Cores (tema claro) ---------- */
+  /* Neutros: 150 é o fundo da página, 100 é a superfície dos cards, 600 é o texto */
+  --neutral-100: #ffffff;
+  --neutral-150: #f2f2f7;
+  --neutral-200: #e5e5ea;
+  --neutral-300: #d1d1d6;
+  --neutral-500: #6c6c70;
+  --neutral-600: #1d1d1f;
+  --neutral-800: #000000;
+
+  /* Verde da marca: 200 é a cor de destaque (menta), 300 é texto de link e o verde dos gráficos */
+  --green-100: #c5fadc;
+  --green-200: #72eea8;
+  --green-300: #1e7a35;
+
+  /* Cores de sistema: -100 é o fundo tingido, -200/-300 é o texto que passa no contraste */
+  --positive-100: #ebf9ee;
+  --positive-200: #1e7a35;
+  --warning-100: #fff4e6;
+  --warning-200: #ff9500; /* só preenchimento, nunca texto */
+  --warning-300: #c93400;
+  --negative-100: #ffebea;
+  --negative-200: #d70015;
+  --blue-100: #e6f2ff;
+  --blue-200: #0040dd;
+  --purple-100: #f7eefc;
+  --purple-200: #8944ab;
+  --magenta-200: #ff2d55;
+  --orange-200: #ff9500;
+
+  /* Materiais e controles */
+  --separator: rgba(60, 60, 67, 0.29);
+  --fill-control: rgba(118, 118, 128, 0.12);
+  --fill-control-hover: rgba(120, 120, 128, 0.2);
+  --control-thumb: #ffffff;
+  --control-knob: #ffffff;
+  --glass-fill: rgba(255, 255, 255, 0.72);
+  --glass-stroke: rgba(0, 0, 0, 0.06);
+  --scrim: rgba(0, 0, 0, 0.3);
+
+  /* Papéis: texto sobre o menta, texto sobre o neutro escuro, anel de foco, cor principal dos gráficos */
+  --on-green-200: #083221;
+  --on-neutral-600: var(--green-200);
+  --focus-ring: var(--green-300);
+  --chart-primary: var(--green-300);
+
+  /* ---------- Tipografia ---------- */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, system-ui, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-brand: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, Inter, sans-serif;
+
+  /* ---------- Espaçamento (base de 4px) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* ---------- Raios ---------- */
+  --radius-sm: 6px;
+  --radius-lg: 10px; /* dica e tooltip do gráfico */
+  --radius-xl: 14px; /* menus e avisos */
+  --radius-2xl: 20px; /* cards e listas */
+  --radius-3xl: 28px; /* folhas e alertas */
+  --radius-full: 9999px; /* tudo que se clica é cápsula */
+
+  /* ---------- Sombras ---------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.18);
+  --shadow-glass: 0 8px 30px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  --shadow-thumb: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+
+  /* ---------- Opacidade ---------- */
+  --opacity-hover: 0.9;
+  --opacity-active: 0.8;
+  --opacity-disabled: 0.4;
+
+  /* ---------- Movimento e camadas ---------- */
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1); /* curva das folhas do iOS */
+  --header-height: 64px;
+  --z-fixed-menu: 1500;
+}
+
+/* ---------- Tema escuro: só os valores que mudam ---------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --neutral-100: #1c1c1e;
+  --neutral-150: #000000;
+  --neutral-200: #2c2c2e;
+  --neutral-300: #3a3a3c;
+  --neutral-500: #aeaeb2;
+  --neutral-600: #f5f5f7;
+  --neutral-800: #ffffff;
+
+  --green-100: #2a3e34;
+  --green-300: var(--green-200);
+
+  --positive-100: #1f3927;
+  --positive-200: #30d158;
+  --warning-100: #40311b;
+  --warning-200: #ff9f0a;
+  --warning-300: #ffb340;
+  --negative-100: #402322;
+  --negative-200: #ff6961;
+  --blue-100: #192d42;
+  --blue-200: #409cff;
+  --purple-100: #362640;
+  --purple-200: #da8fff;
+  --magenta-200: #ff375f;
+  --orange-200: #ff9f0a;
+
+  --separator: rgba(84, 84, 88, 0.6);
+  --fill-control: rgba(118, 118, 128, 0.24);
+  --fill-control-hover: rgba(120, 120, 128, 0.36);
+  --control-thumb: #636366;
+  --glass-fill: rgba(40, 40, 42, 0.72);
+  --glass-stroke: rgba(255, 255, 255, 0.12);
+  --scrim: rgba(0, 0, 0, 0.55);
+
+  --on-neutral-600: #083221;
+  --focus-ring: var(--green-200);
+  --chart-primary: var(--green-200);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.7);
+  --shadow-glass: 0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --shadow-thumb: 0 3px 8px rgba(0, 0, 0, 0.4);
+}

@@ -1,5 +1,6 @@
 import { Star } from 'lucide-react'
 import Chip from './ui/Chip.jsx'
+import ContentSection from './ui/ContentSection.jsx'
 
 // Atalhos para as locações favoritas. Um clique abre a previsão da cidade, sem precisar buscar.
 function SavedLocations({ favoritos, onSelect }) {
@@ -8,24 +9,21 @@ function SavedLocations({ favoritos, onSelect }) {
   }
 
   return (
-    <section className="section animate-fade-in" aria-labelledby="titulo-favoritos">
-      <div className="section-heading">
-        <h2 id="titulo-favoritos" className="heading-2">
-          Locações salvas ({favoritos.length})
-        </h2>
-        <p className="body-sm text-muted">Selecione uma locação para ver a previsão</p>
-      </div>
-
-      <div className="chip-row chip-row--quebra">
+    <ContentSection
+      title={`Locações salvas (${favoritos.length})`}
+      subtitle="Selecione uma locação para ver a previsão"
+      className="animate-fade-in"
+    >
+      <div className="chip-row">
         {favoritos.map((cidade) => (
           <Chip key={cidade.id} onClick={() => onSelect(cidade)}>
-            <Star size={14} fill="currentColor" aria-hidden="true" />
+            <Star size={16} fill="currentColor" aria-hidden="true" />
             {cidade.nome}
-            {cidade.estado && <span className="text-muted">{cidade.estado}</span>}
+            {cidade.estado && <span className="chip__detail">{cidade.estado}</span>}
           </Chip>
         ))}
       </div>
-    </section>
+    </ContentSection>
   )
 }
 

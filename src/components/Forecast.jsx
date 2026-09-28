@@ -5,22 +5,23 @@ import BestWindows from './BestWindows.jsx'
 import DaySelector from './DaySelector.jsx'
 import DaySummary from './DaySummary.jsx'
 import HourlyTable from './HourlyTable.jsx'
-import ForecastSkeleton from './ForecastSkeleton.jsx'
-import EmptyState from './EmptyState.jsx'
+import ForecastSkeleton, { ChartSkeleton } from './ForecastSkeleton.jsx'
 import Button from './ui/Button.jsx'
-import Card from './ui/Card.jsx'
-import Shimmer from './ui/Shimmer.jsx'
+import ContentSection from './ui/ContentSection.jsx'
+import FeedbackPlaceholder from './ui/FeedbackPlaceholder.jsx'
 import { usePrevisao } from '../hooks/usePrevisao.js'
 import { useArmazenamentoLocal } from '../hooks/useArmazenamentoLocal.js'
-import { MODOS } from '../utils/nota.js'
-import { avaliarDias, encontrarMelhoresJanelas } from '../utils/avaliacao.js'
-import { formatarDiaLongo } from '../utils/formatters.js'
+import { classificarNota, MODOS } from '../utils/nota.js'
+import { avaliarDias, encontrarMelhoresJanelas, encontrarMelhorHora } from '../utils/avaliacao.js'
+import { formatarDiaLongo, formatarHorario, formatarNota } from '../utils/formatters.js'
 
 // O gráfico usa a biblioteca Recharts, que é grande. Com lazy, o código dele só é baixado
 // quando o gráfico aparece pela primeira vez, e a página inicial carrega mais rápido.
 const ScoreChart = lazy(() => import('./ScoreChart.jsx'))
 
-// Previsão da cidade escolhida: modo de gravação, melhores janelas e tabela hora a hora
+// Previsão da cidade escolhida, em duas seções no padrão ContentSection do design system:
+// 1. Melhores janelas: modo de gravação (filtro) e os cards das janelas
+// 2. Previsão hora a hora: dias (filtro), melhor horário (destaque), resumo (métricas), gráfico e tabela
 function Forecast({ cidade }) {
   const { dias, agora, status, recarregar } = usePrevisao(cidade)
   // O modo escolhido fica salvo no navegador e volta na próxima visita
@@ -28,7 +29,7 @@ function Forecast({ cidade }) {
   const chaveModo = MODOS[modoSalvo] ? modoSalvo : 'externa' // ignora um valor salvo inválido
   const [indiceDia, setIndiceDia] = useState(0)
   const [destaque, setDestaque] = useState(null) // janela escolhida nos cards
-  const refTabela = useRef(null) // referência à seção da tabela, para rolar a tela até ela
+  const refPrevisao = useRef(null) // referência à seção hora a hora, para rolar a tela até ela
 
   const modo = MODOS[chaveModo]
 
@@ -57,7 +58,7 @@ function Forecast({ cidade }) {
     setDestaque(janela)
     // Rolagem suave, a não ser que a pessoa prefira menos movimento na tela
     const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    refTabela.current?.scrollIntoView({ behavior: menosMovimento ? 'auto' : 'smooth', block: 'start' })
+    refPrevisao.current?.scrollIntoView({ behavior: menosMovimento ? 'auto' : 'smooth', block: 'start' })
   }
 
   if (status === 'carregando') {
@@ -66,16 +67,16 @@ function Forecast({ cidade }) {
 
   if (status === 'erro') {
     return (
-      <EmptyState
+      <FeedbackPlaceholder
         icon={CircleAlert}
         tone="negative"
-        titulo="Não foi possível carregar a previsão"
-        texto="Verifique sua conexão com a internet e tente novamente."
+        title="Não foi possível carregar a previsão"
+        description="Verifique sua conexão com a internet e tente novamente."
       >
-        <Button variant="secondary" onClick={recarregar}>
+        <Button variant="secondary-neutral" compact onClick={recarregar}>
           Tentar novamente
         </Button>
-      </EmptyState>
+      </FeedbackPlaceholder>
     )
   }
 
@@ -83,63 +84,48 @@ function Forecast({ cidade }) {
 
   if (!dia) {
     return (
-      <EmptyState
+      <FeedbackPlaceholder
         icon={CalendarX}
-        titulo="Não há dados disponíveis"
-        texto="A previsão desta cidade veio vazia. Tente outra cidade."
+        title="Não há dados disponíveis"
+        description="A previsão desta cidade veio vazia. Tente outra cidade."
       />
     )
   }
 
   // Só o dia de hoje tem horas que já passaram
   const horaAtual = indiceDia === 0 && agora ? `${agora.slice(0, 13)}:00` : ''
+  const melhorHora = encontrarMelhorHora(dia, horaAtual)
+  const { rotulo } = classificarNota(melhorHora.nota)
 
   return (
     <>
-      <section className="section animate-fade-in" aria-labelledby="titulo-janelas">
-        <div className="section-heading">
-          <h2 id="titulo-janelas" className="heading-2">
-            Melhores janelas para gravar
-          </h2>
-          <p className="body-sm text-muted">
-            As sequências de horas com as maiores notas nos próximos 7 dias. Escolha o modo de
-            gravação.
-          </p>
-        </div>
-
-        <ModeSelector chaveModo={chaveModo} onChange={handleModeChange} />
-        <BestWindows janelas={melhoresJanelas} onSelect={handleWindowSelect} />
-      </section>
-
-      <section
-        ref={refTabela}
-        className="section section--scroll-alvo animate-fade-in"
-        aria-labelledby="titulo-previsao"
+      <ContentSection
+        title="Melhores janelas para gravar"
+        subtitle="As horas seguidas com as maiores notas nos próximos 7 dias"
+        filters={<ModeSelector chaveModo={chaveModo} onChange={handleModeChange} />}
+        className="animate-fade-in"
       >
-        <div className="section-heading">
-          <h2 id="titulo-previsao" className="heading-2">
-            Previsão hora a hora
-          </h2>
-          <p className="body-sm text-muted">
-            {formatarDiaLongo(dia.data)} · horários no fuso da cidade · passe o mouse na nota para
-            ver o motivo
-          </p>
-        </div>
+        <BestWindows janelas={melhoresJanelas} onSelect={handleWindowSelect} />
+      </ContentSection>
 
-        <DaySelector dias={diasAvaliados} indiceSelecionado={indiceDia} onSelect={handleDaySelect} />
-        <DaySummary dia={dia} janelas={dia.janelas} />
+      <ContentSection
+        ref={refPrevisao}
+        title="Previsão hora a hora"
+        subtitle={`${formatarDiaLongo(dia.data)} · horários no fuso da cidade`}
+        filters={
+          <DaySelector dias={diasAvaliados} indiceSelecionado={indiceDia} onSelect={handleDaySelect} />
+        }
+        titleCard={`Melhor horário do dia · modo ${modo.nome}`}
+        contentCard={`Às ${formatarHorario(melhorHora.horario)}, com nota ${formatarNota(melhorHora.nota)} (${rotulo.toLowerCase()})`}
+        metrics={<DaySummary dia={dia} janelas={dia.janelas} />}
+        className="animate-fade-in"
+      >
         {/* Suspense mostra o esqueleto enquanto o código do gráfico é baixado */}
-        <Suspense
-          fallback={
-            <Card>
-              <Shimmer full height={280} />
-            </Card>
-          }
-        >
-          <ScoreChart dia={dia} horaAtual={horaAtual} nomeDoModo={modo.nome} />
+        <Suspense fallback={<ChartSkeleton />}>
+          <ScoreChart dia={dia} horaAtual={horaAtual} melhorHora={melhorHora} />
         </Suspense>
         <HourlyTable horas={dia.horas} horaAtual={horaAtual} destaque={destaque} />
-      </section>
+      </ContentSection>
     </>
   )
 }
